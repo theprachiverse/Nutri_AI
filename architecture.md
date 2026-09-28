@@ -574,14 +574,14 @@ Model: gpt-4o / claude-3-5-sonnet
 
 Everything built in Milestone 1 is a deliberate placeholder for what Milestone 2 fills in. The following must hold at the end of Milestone 1:
 
-- [ ] `SourcesPanel` component exists and renders, but shows no sources
-- [ ] `ClaimSchema.source` is typed `z.null()` — not missing from the schema
-- [ ] Every assistant message persists its full `rawResponse` JSON to the DB
-- [ ] The API route, request shape, and response shape are stable — Milestone 2 must not require frontend changes to display citations
-- [ ] `isOutOfScope()` and `buildDeclineResponse()` are in isolated, testable functions
-- [ ] `callModel()` is behind an abstraction — Milestone 2 can inject a retrieval step before the model call
-- [ ] The 10 fixed questions in `failure-log/questions.md` are committed to the repo
-- [ ] `results-m1.md` is filled in and committed
+- [x] `SourcesPanel` component exists and renders, but shows no sources
+- [x] `ClaimSchema.source` is typed `z.null()` — not missing from the schema
+- [x] Every assistant message persists its full `rawResponse` JSON to the DB
+- [x] The API route, request shape, and response shape are stable — Milestone 2 must not require frontend changes to display citations
+- [x] `isOutOfScope()` and `buildDeclineResponse()` are in isolated, testable functions
+- [x] `callModel()` is behind an abstraction — Milestone 2 can inject a retrieval step before the model call
+- [x] The 10 fixed questions in `failure-log/questions.md` are committed to the repo
+- [x] `results-m1.md` is filled in and committed
 
 ---
 

@@ -592,7 +592,7 @@
 
 ### Tasks
 
-- [ ] **7.1 — Set up Supabase (production DB)**
+- [x] **7.1 — Set up Supabase (production DB)**
   1. Create a new project at [supabase.com](https://supabase.com).
   2. Copy the **Connection String** (URI format) from Settings → Database.
   3. Store it — you'll add it to Vercel.
@@ -616,7 +616,7 @@
   }
   ```
 
-- [ ] **7.4 — Deploy to Vercel**
+- [x] **7.4 — Deploy to Vercel**
   1. Push all changes to `main` on GitHub.
   2. Go to [vercel.com](https://vercel.com) → New Project → Import from GitHub.
   3. Select `ai-nutrition` repo.
@@ -627,13 +627,13 @@
      - `DATABASE_URL` (Supabase URI)
   5. Click Deploy.
 
-- [ ] **7.5 — Verify production deployment**
+- [x] **7.5 — Verify production deployment**
   - Chat page loads at `https://<project>.vercel.app/chat`.
   - Send a test message — model responds correctly.
   - Send an out-of-scope question — decline response appears.
   - Check Supabase Table Editor — messages are being persisted.
 
-- [ ] **7.6 — Check the M2 readiness checklist** (`architecture.md §14`)
+- [x] **7.6 — Check the M2 readiness checklist** (`architecture.md §14`)
   Go through every checkbox and confirm it is satisfied before calling Milestone 1 complete.
 
 ### Exit Criteria
