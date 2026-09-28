@@ -10,6 +10,6 @@ export async function GET() {
   return NextResponse.json(conversations.map(c => ({
     id: c.id,
     createdAt: c.createdAt,
-    preview: [...(c.messages[0]?.content ?? '')].slice(0, 60).join(''),
+    preview: Array.from(c.messages[0]?.content ?? '').slice(0, 60).join(''),
   })));
 }
