@@ -1,9 +1,9 @@
+/* ── Google Fonts via CSS import fallback ───────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* ── Google Fonts via CSS import fallback ───────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap');
 
 @layer base {
   html, body {
