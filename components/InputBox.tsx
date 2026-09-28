@@ -30,12 +30,13 @@ export default function InputBox({ onSend, disabled }: { onSend: (text: string) 
       {/* Floating Pill Input Container */}
       <div className="bg-white rounded-full shadow-lg p-2 pl-5 flex items-center gap-3 focus-within:shadow-xl transition-all duration-300 border border-slate-200/80">
         <span className="material-symbols-outlined text-[#0d9488] text-[22px]">temp_preferences_custom</span>
-        <input 
+        <textarea 
+          ref={textareaRef}
           autoComplete="off" 
-          className="font-body-md text-body-md text-on-surface placeholder:text-outline/70 flex-1 bg-transparent outline-none border-none py-1" 
+          className="font-body-md text-body-md text-on-surface placeholder:text-outline/70 flex-1 bg-transparent outline-none border-none py-1 resize-none min-h-[32px] max-h-32" 
           id="chat-input" 
           placeholder="Ask about food, nutrition, supplements, bedtime timing..." 
-          type="text"
+          rows={1}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}

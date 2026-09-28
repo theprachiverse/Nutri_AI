@@ -10,6 +10,7 @@ interface Message {
   content: string;
   claims?: Claim[];
   timestamp?: string;
+  isError?: boolean;
 }
 
 export default function ChatWindow() {
@@ -63,7 +64,7 @@ export default function ChatWindow() {
     } catch (error) {
       setMessages([
         ...newMessages,
-        { role: 'assistant', content: 'Something went wrong. Please try again.', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+        { role: 'assistant', content: 'Something went wrong. Please try again.', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), isError: true }
       ]);
     } finally {
       setIsLoading(false);

@@ -7,6 +7,7 @@ interface Message {
   content: string;
   claims?: Claim[];
   timestamp?: string;
+  isError?: boolean;
 }
 
 export default function MessageBubble({ message, onSelectClaim, selectedClaim }: { message: Message, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
@@ -60,8 +61,14 @@ export default function MessageBubble({ message, onSelectClaim, selectedClaim }:
         </div>
       </div>
       
-      <div className="relative z-10 my-6 p-7 sm:p-8 rounded-2xl bg-[#f0fdfa]/90 border-l-4 border-[#0d9488] shadow-sm">
-        <p className="font-body-md text-body-md text-slate-800 mt-4 leading-loose whitespace-pre-wrap">{message.content}</p>
+      <div className={`relative z-10 my-6 p-7 sm:p-8 rounded-2xl shadow-sm ${message.isError ? 'bg-red-50 border-l-4 border-red-500 text-red-900' : 'bg-[#f0fdfa]/90 border-l-4 border-[#0d9488]'}`}>
+        {message.isError && (
+          <div className="flex items-center gap-2 mb-2 text-red-600">
+            <span className="material-symbols-outlined">error</span>
+            <span className="font-semibold text-sm uppercase tracking-wider">Error</span>
+          </div>
+        )}
+        <p className={`font-body-md text-body-md mt-2 leading-loose whitespace-pre-wrap ${message.isError ? 'text-red-800' : 'text-slate-800'}`}>{message.content}</p>
       </div>
 
       {message.claims && message.claims.length > 0 && (
