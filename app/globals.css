@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts via CSS import fallback ───────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap');
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+    height: 100%;
+  }
+  main > :first-child { margin-top: 0 !important; }
+  main > :last-child  { margin-bottom: 0 !important; }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ── Hide native scrollbars ─────────────────────────────────────────────── */
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+/* ── Background Canvas — botanical gradient ─────────────────────────────── */
+body {
+  background: linear-gradient(160deg, #F0FDF9 0%, #DCFCE7 40%, #D1FAE5 70%, #E8F7F0 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Subtle botanical dot pattern overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, #10b981 0.6px, transparent 0.6px),
+    radial-gradient(circle, #059669 0.4px, transparent 0.4px);
+  background-size: 28px 28px, 14px 14px;
+  background-position: 0 0, 7px 7px;
+  opacity: 0.055;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient radial glow */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(16, 185, 129, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(5, 150, 105, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Glass Tiers ────────────────────────────────────────────────────────── */
+.glass-1 {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(167, 243, 208, 0.4);
+  box-shadow: 0 4px 20px -2px rgba(6, 78, 59, 0.04), 0 1px 4px rgba(6, 78, 59, 0.02);
+}
+
+.glass-2 {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border: 1px solid rgba(167, 243, 208, 0.55);
+  box-shadow: 0 12px 32px -4px rgba(6, 78, 59, 0.08), 0 2px 6px -1px rgba(6, 78, 59, 0.03);
+}
+
+.glass-3 {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(28px) saturate(220%);
+  -webkit-backdrop-filter: blur(28px) saturate(220%);
+  border: 1px solid rgba(167, 243, 208, 0.6);
+  box-shadow: 0 20px 48px -8px rgba(6, 78, 59, 0.10), 0 4px 12px -2px rgba(16, 185, 129, 0.05);
+}
+
+/* ── User bubble ────────────────────────────────────────────────────────── */
+.bubble-user {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  box-shadow: 0 6px 20px -2px rgba(16, 185, 129, 0.30), 0 2px 6px rgba(5, 150, 105, 0.15);
+}
+
+/* ── Emerald gradient utility ───────────────────────────────────────────── */
+.gradient-emerald {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+}
+
+/* ── Macro ring container ───────────────────────────────────────────────── */
+.macro-ring {
+  filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.18));
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-fade-in { animation: fadeIn 0.35s ease both; }
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 1; }
+  40%           { transform: translateY(-6px); opacity: 0.8; }
+}
+.dot-1 { animation: dotBounce 1.3s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+.dot-2 { animation: dotBounce 1.3s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0.2s infinite; }
+.dot-3 { animation: dotBounce 1.3s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0.4s infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.04); opacity: 0.85; }
+}
+.animate-ring-pulse { animation: ringPulse 3s ease-in-out infinite; }
+
+@keyframes floatLeaf {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-8px) rotate(2deg); }
+  66%       { transform: translateY(-4px) rotate(-1deg); }
+}
+.animate-float { animation: floatLeaf 6s ease-in-out infinite; }
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* ── Focus ring ─────────────────────────────────────────────────────────── */
+input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+}
+
+/* ── Selection ──────────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(16, 185, 129, 0.25);
+  color: #064E3B;
+}
+
+/* ── Custom utility: text-balance ───────────────────────────────────────── */
+.text-balance { text-wrap: balance; }
+
+/* ── Smooth transitions ─────────────────────────────────────────────────── */
+.transition-glass {
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Nutrient badge colors ──────────────────────────────────────────────── */
+.badge-calorie {
+  background: rgba(245, 158, 11, 0.12);
+  color: #B45309;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.badge-hydration {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0369A1;
+  border-color: rgba(14, 165, 233, 0.3);
+}
+.badge-plant {
+  background: #ECFDF5;
+  color: #064E3B;
+  border-color: #A7F3D0;
+}
+
+/* ── Prose rich text for AI responses ──────────────────────────────────── */
+.prose-nutriai strong {
+  color: #059669;
+  font-weight: 700;
+}
+.prose-nutriai em {
+  color: #064E3B;
+  font-style: italic;
+}

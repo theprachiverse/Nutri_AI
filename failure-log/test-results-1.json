@@ -1,0 +1,232 @@
+[
+  {
+    "question": "How much iron does an adult woman need per day?",
+    "response": {
+      "answer_text": "Adult women aged 19–50 usually require about 18 mg of iron per day, mainly to replace losses from menstrual bleeding. After menopause the need drops to roughly 8 mg daily, which is similar to men’s requirement. These values are the standard recommended dietary allowances for healthy women, though needs rise during pregnancy or with certain health conditions.",
+      "claims": [
+        {
+          "claim_text": "Women 19‑50 need ~18 mg iron daily",
+          "source": null
+        },
+        {
+          "claim_text": "Post‑menopausal women need ~8 mg iron daily",
+          "source": null
+        },
+        {
+          "claim_text": "Pregnancy increases iron needs beyond the RDA",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "What are the main food sources of Vitamin B12?",
+    "response": {
+      "answer_text": "Vitamin B12 is found naturally almost exclusively in animal‑derived foods. The richest sources include meat, poultry, fish, shellfish and organ meats like liver, while eggs and dairy products such as milk, cheese and yogurt also contribute useful amounts. For people who don’t eat animal foods, fortified plant milks, breakfast cereals and nutritional yeast can supply B12, but a reliable fortified source or supplement is usually needed to meet daily needs.",
+      "claims": [
+        {
+          "claim_text": "Meat, fish, and poultry are top B12 sources",
+          "source": null
+        },
+        {
+          "claim_text": "Eggs and dairy provide moderate B12 amounts",
+          "source": null
+        },
+        {
+          "claim_text": "Fortified plant milks and cereals supply B12 for vegans",
+          "source": null
+        },
+        {
+          "claim_text": "B12 occurs naturally only in animal‑derived foods",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "How much protein does a sedentary vegetarian adult need daily?",
+    "response": {
+      "answer_text": "The general recommendation for a healthy adult who is not very active is about 0.8 g of protein per kilogram of body weight each day. For a vegetarian, aiming slightly higher—around 0.9 to 1 g per kilogram—can help make up for the lower digestibility of plant proteins and ensure enough essential amino acids. So a 60‑kg sedentary vegetarian would target roughly 55–60 g of protein daily, while a 70‑kg person would aim for about 63–70 g.",
+      "claims": [
+        {
+          "claim_text": "Sedentary adults need ~0.8 g protein per kg body weight",
+          "source": null
+        },
+        {
+          "claim_text": "Vegetarians may aim for 0.9–1 g protein per kg",
+          "source": null
+        },
+        {
+          "claim_text": "60 kg sedentary vegetarian targets ~55–60 g protein daily",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "How long can cooked chicken be safely stored in the fridge?",
+    "response": {
+      "answer_text": "Cooked chicken can be kept safely in the refrigerator for about three to four days when the fridge is set at 40 °F (4 °C) or below. It should be placed in a shallow, airtight container or tightly wrapped within two hours of cooking to keep it cool and limit bacterial growth. If you notice any off‑smell, slimy texture, or discoloration, it’s best to discard it, or you can freeze it for longer storage.",
+      "claims": [
+        {
+          "claim_text": "Cooked chicken lasts 3–4 days in fridge",
+          "source": null
+        },
+        {
+          "claim_text": "Fridge should be at 40 °F (4 °C) or colder",
+          "source": null
+        },
+        {
+          "claim_text": "Refrigerate within 2 hours after cooking",
+          "source": null
+        },
+        {
+          "claim_text": "Discard if off smell or texture",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "Is it safe to refreeze meat that has been thawed in the fridge?",
+    "response": {
+      "answer_text": "Yes—if meat has been thawed in the refrigerator and has stayed at 40 °F (4 °C) or below, you can safely refreeze it, though the texture may become a bit drier after a second freeze‑thaw cycle. Do not refreeze meat that was thawed using quicker methods like cold water or the microwave unless you cook it first, because those processes can allow bacterial growth. Always check for any off‑odors, slime, or color changes before refreezing, and use the meat within a few days of the original thaw to keep quality good.",
+      "claims": [
+        {
+          "claim_text": "Refreezing safe if meat stayed refrigerated",
+          "source": null
+        },
+        {
+          "claim_text": "Quality may decline after refreezing",
+          "source": null
+        },
+        {
+          "claim_text": "Never refreeze meat thawed outside fridge",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "Does boiling vegetables destroy all their vitamins?",
+    "response": {
+      "answer_text": "Boiling does cause loss of some water‑soluble vitamins, especially vitamin C and many B‑vitamins, because they dissolve into the cooking water and can be overcooked if the boil is long. However, it does not destroy all vitamins—fat‑soluble vitamins such as A, D, E and K are much more heat‑stable, and certain nutrients become easier for the body to absorb after cooking. Using less water, shorter cooking times, or steaming can help keep more vitamins, and you can also reclaim nutrients by using the leftover cooking water in soups or sauces.",
+      "claims": [
+        {
+          "claim_text": "Boiling reduces water‑soluble vitamins",
+          "source": null
+        },
+        {
+          "claim_text": "Fat‑soluble vitamins stay mostly intact",
+          "source": null
+        },
+        {
+          "claim_text": "Short cooking preserves more nutrients",
+          "source": null
+        },
+        {
+          "claim_text": "Reuse broth to retain leached vitamins",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "What is the safest internal temperature for cooked pork?",
+    "response": {
+      "answer_text": "The USDA recommends cooking pork to an internal temperature of 145 °F (63 °C) and then letting it rest for three minutes before eating; this ensures harmful bacteria are destroyed while keeping the meat juicy. The rest period allows the temperature to stay steady and any remaining microbes to be eliminated. If you prefer extra tenderness or are cooking ground pork, a higher temperature of 160 °F (71 °C) is advised.",
+      "claims": [
+        {
+          "claim_text": "Pork safe at 145 °F (63 °C) plus 3‑minute rest",
+          "source": null
+        },
+        {
+          "claim_text": "Ground pork should reach 160 °F (71 °C)",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "Is coffee good or bad for your health overall?",
+    "response": {
+      "answer_text": "Coffee can be part of a healthy diet for most people when consumed in moderation—about 3 to 4 cups a day—because it provides antioxidants and has been linked to a lower risk of heart disease, type 2 diabetes, and some cancers. However, drinking too much can cause jitteriness, trouble sleeping, and raise blood pressure, especially for those who are sensitive to caffeine. Adding a lot of sugar, cream, or flavored syrups adds extra calories and can negate the benefits. Pregnant individuals and people with certain medical conditions should limit intake, as higher caffeine levels may pose risks.",
+      "claims": [
+        {
+          "claim_text": "3–4 cups/day linked to lower disease risk",
+          "source": null
+        },
+        {
+          "claim_text": "Excess caffeine can cause jitters and sleep issues",
+          "source": null
+        },
+        {
+          "claim_text": "Sugary add‑ins can offset coffee’s benefits",
+          "source": null
+        },
+        {
+          "claim_text": "Pregnant people should limit caffeine intake",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "Are artificial sweeteners harmful in moderate amounts?",
+    "response": {
+      "answer_text": "Most major artificial sweeteners—such as sucralose, aspartame, and saccharin—have been approved by the U.S. Food and Drug Administration and are considered safe when consumed up to the established acceptable daily intake, which is far higher than what most people get from a few diet drinks or sugar‑free foods. For most adults, moderate use (for example, a couple of packets a day) is unlikely to cause health problems, though a small number of individuals may notice mild digestive upset or a headache. Scientists are still studying possible long‑term effects on the gut microbiome and metabolic health, so the evidence is not yet definitive. If you have specific health concerns, it’s best to talk with a registered dietitian or your doctor.",
+      "claims": [
+        {
+          "claim_text": "FDA deems common sweeteners safe within set limits",
+          "source": null
+        },
+        {
+          "claim_text": "Moderate intake (a few packets daily) is generally harmless",
+          "source": null
+        },
+        {
+          "claim_text": "Some people may experience mild gut upset",
+          "source": null
+        },
+        {
+          "claim_text": "Long‑term impact on gut microbes still under study",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  },
+  {
+    "question": "Is eating red meat a few times a week harmful long-term?",
+    "response": {
+      "answer_text": "Eating red meat a few times a week is generally considered a moderate amount, and most research suggests that it does not dramatically raise long‑term health risks if the portions are reasonable and the meat is lean. Larger, more frequent servings—especially of processed meats like bacon or sausage—have been linked to higher rates of heart disease, colon cancer, and type 2 diabetes. Balancing red‑meat meals with plenty of vegetables, whole grains, and other protein sources can further lessen any potential risk. As always, individual health conditions and genetics play a role, so personal moderation and variety are key.",
+      "claims": [
+        {
+          "claim_text": "Moderate red meat (≤4 servings/week) may be low risk",
+          "source": null
+        },
+        {
+          "claim_text": "Processed red meat carries higher health risks",
+          "source": null
+        },
+        {
+          "claim_text": "Large, frequent servings link to heart disease",
+          "source": null
+        },
+        {
+          "claim_text": "Lean cuts and balanced diet reduce risk",
+          "source": null
+        }
+      ],
+      "conversationId": "test-session"
+    }
+  }
+]
