@@ -1,7 +1,7 @@
 import React from 'react';
 import { Claim } from '@/lib/schema';
 
-export default function SourcesPanel({ selectedClaim }: { selectedClaim: Claim | null }) {
+export default function SourcesPanel({ selectedClaim, onClose }: { selectedClaim: Claim | null, onClose: () => void }) {
   return (
     <aside className="w-full lg:w-96 bg-white p-6 sm:p-7 flex flex-col justify-between shadow-sm border-l border-slate-200 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] overflow-y-auto" id="sources-sidebar">
       <div className="space-y-6">
@@ -13,7 +13,7 @@ export default function SourcesPanel({ selectedClaim }: { selectedClaim: Claim |
             </span>
             <h2 className="font-headline-sm text-headline-sm font-semibold text-primary">Sources &amp; References</h2>
           </div>
-          <button aria-label="Dismiss sources tray" className="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors" type="button">
+          <button onClick={onClose} aria-label="Dismiss sources tray" className="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-low transition-colors" type="button">
             <span className="material-symbols-outlined text-[18px]">close</span>
           </button>
         </div>

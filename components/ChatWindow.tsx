@@ -16,7 +16,13 @@ export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null);
+  const [isSourcesOpen, setIsSourcesOpen] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+
+  const handleSelectClaim = (claim: Claim) => {
+    setSelectedClaim(claim);
+    setIsSourcesOpen(true);
+  };
 
   const handleSend = async (text: string) => {
     const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -79,6 +85,15 @@ export default function ChatWindow() {
             </div>
           </div>
           <div className="flex items-center gap-space-sm">
+            <button 
+              onClick={() => setIsSourcesOpen(!isSourcesOpen)}
+              className="w-10 h-10 rounded-full hover:bg-surface-container-low text-primary transition-colors flex items-center justify-center"
+              aria-label="Toggle Sources Panel"
+            >
+              <span className="material-symbols-outlined text-[22px]">
+                {isSourcesOpen ? 'menu_open' : 'menu_book'}
+              </span>
+            </button>
             <div className="relative ml-space-xs">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center ring-2 ring-surface-container-lowest">
                 <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
@@ -97,14 +112,19 @@ export default function ChatWindow() {
               <MessageList 
                 messages={messages} 
                 isLoading={isLoading} 
-                onSelectClaim={setSelectedClaim} 
+                onSelectClaim={handleSelectClaim} 
                 selectedClaim={selectedClaim}
               />
               <InputBox onSend={handleSend} disabled={isLoading} />
             </div>
 
             {/* RIGHT COLUMN */}
-            <SourcesPanel selectedClaim={selectedClaim} />
+            {isSourcesOpen && (
+              <SourcesPanel 
+                selectedClaim={selectedClaim} 
+                onClose={() => setIsSourcesOpen(false)} 
+              />
+            )}
           </div>
         </div>
       </main>

@@ -12,9 +12,13 @@ interface Message {
 export default function MessageList({ messages, isLoading, onSelectClaim, selectedClaim }: { messages: Message[], isLoading: boolean, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  const hour = new Date().getHours();
+  let sessionTitle = "Evening Rest & Recovery Session";
+  if (hour >= 5 && hour < 12) {
+    sessionTitle = "Morning Start & Fuel Session";
+  } else if (hour >= 12 && hour < 17) {
+    sessionTitle = "Afternoon Energy & Focus Session";
+  }
 
   return (
     <div className="max-w-3xl w-full mx-auto space-y-7 flex-1 pb-8 overflow-y-auto">
@@ -24,7 +28,7 @@ export default function MessageList({ messages, isLoading, onSelectClaim, select
           <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-container/20 text-primary">
             <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>spa</span>
           </span>
-          <span className="font-label-sm text-label-sm text-primary tracking-wider uppercase font-semibold">Evening Rest &amp; Recovery Session</span>
+          <span className="font-label-sm text-label-sm text-primary tracking-wider uppercase font-semibold">{sessionTitle}</span>
         </div>
         <span className="font-caption text-caption text-outline">Today</span>
       </div>
