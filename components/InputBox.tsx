@@ -26,25 +26,60 @@ export default function InputBox({ onSend, disabled }: { onSend: (text: string) 
   }, [text]);
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4">
-      <div className="glass-2 rounded-2xl flex items-end p-2 transition-glass hover:shadow-lg focus-within:shadow-lg">
-        <textarea
-          ref={textareaRef}
+    <div className="max-w-3xl w-full mx-auto pt-2 pb-4 space-y-3 sticky bottom-3 z-30">
+      {/* Floating Pill Input Container */}
+      <div className="bg-white rounded-full shadow-lg p-2 pl-5 flex items-center gap-3 focus-within:shadow-xl transition-all duration-300 border border-slate-200/80">
+        <span className="material-symbols-outlined text-[#0d9488] text-[22px]">temp_preferences_custom</span>
+        <input 
+          autoComplete="off" 
+          className="font-body-md text-body-md text-on-surface placeholder:text-outline/70 flex-1 bg-transparent outline-none border-none py-1" 
+          id="chat-input" 
+          placeholder="Ask about food, nutrition, supplements, bedtime timing..." 
+          type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={disabled}
-          placeholder="Ask a nutrition question..."
-          className="flex-1 max-h-32 bg-transparent border-0 resize-none px-4 py-3 focus:ring-0 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:shadow-none"
-          rows={1}
         />
-        <button
-          onClick={handleSend}
-          disabled={disabled || !text.trim()}
-          className="p-3 m-1 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:hover:bg-emerald-600 transition-colors flex-shrink-0"
-        >
-          <span className="material-symbols-outlined font-semibold">send</span>
-        </button>
+        <div className="flex items-center gap-1.5 pr-1">
+          <button aria-label="Voice input" className="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-[#0d9488] hover:bg-slate-50 transition-colors" type="button">
+            <span className="material-symbols-outlined text-[20px]">mic</span>
+          </button>
+          <button 
+            aria-label="Send message" 
+            className="w-11 h-11 rounded-full bg-[#0d9488] text-white flex items-center justify-center hover:bg-[#0f766e] active:scale-95 shadow-md shadow-teal-700/25 transition-all duration-200 disabled:opacity-50" 
+            id="send-button" 
+            type="button"
+            onClick={handleSend}
+            disabled={disabled || !text.trim()}
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_upward</span>
+          </button>
+        </div>
+      </div>
+      
+      {/* Suggested Queries Chips */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-nowrap">
+        <div className="flex items-center gap-1.5 pl-2 text-outline shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          <span className="font-label-sm text-label-sm font-semibold">Try asking:</span>
+        </div>
+        {[
+          "Does tart cherry juice help you sleep?",
+          "What are the health benefits of fasting?",
+          "How do Omega-3s help my heart & brain?",
+          "Which type of magnesium is best for sleep?"
+        ].map((query, i) => (
+          <button 
+            key={i}
+            onClick={() => onSend(query)}
+            disabled={disabled}
+            className="suggestion-chip px-3.5 py-1 rounded-full bg-surface-container-lowest hover:bg-surface-container-low text-on-surface font-label-sm text-label-sm shadow-sm transition-colors shrink-0" 
+            type="button"
+          >
+            {query}
+          </button>
+        ))}
       </div>
     </div>
   );
