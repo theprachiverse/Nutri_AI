@@ -12,6 +12,13 @@ interface Message {
 export default function MessageList({ messages, isLoading, onSelectClaim, selectedClaim }: { messages: Message[], isLoading: boolean, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [messages, isLoading]);
+
   const hour = new Date().getHours();
   let sessionTitle = "Evening Rest & Recovery Session";
   if (hour >= 5 && hour < 12) {
