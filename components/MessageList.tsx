@@ -6,9 +6,10 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   claims?: Claim[];
+  timestamp?: string;
 }
 
-export default function MessageList({ messages, isLoading, onSelectClaim }: { messages: Message[], isLoading: boolean, onSelectClaim: (claim: Claim) => void }) {
+export default function MessageList({ messages, isLoading, onSelectClaim, selectedClaim }: { messages: Message[], isLoading: boolean, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export default function MessageList({ messages, isLoading, onSelectClaim }: { me
       ) : (
         <div className="pt-2">
           {messages.map((msg, idx) => (
-            <MessageBubble key={idx} message={msg} onSelectClaim={onSelectClaim} />
+            <MessageBubble key={idx} message={msg} onSelectClaim={onSelectClaim} selectedClaim={selectedClaim} />
           ))}
         </div>
       )}

@@ -6,9 +6,10 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   claims?: Claim[];
+  timestamp?: string;
 }
 
-export default function MessageBubble({ message, onSelectClaim }: { message: Message, onSelectClaim: (claim: Claim) => void }) {
+export default function MessageBubble({ message, onSelectClaim, selectedClaim }: { message: Message, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
   const isUser = message.role === 'user';
   
   if (isUser) {
@@ -20,6 +21,11 @@ export default function MessageBubble({ message, onSelectClaim }: { message: Mes
           <p className="font-body-md text-body-md text-on-surface leading-relaxed">
             {message.content}
           </p>
+          {message.timestamp && (
+            <div className="absolute bottom-1 right-2.5 text-[10px] text-slate-400 font-medium tracking-wide">
+              {message.timestamp}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -41,9 +47,16 @@ export default function MessageBubble({ message, onSelectClaim }: { message: Mes
             <span>•</span> {message.claims?.length || 0} verified takeaways
           </span>
         </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-primary font-label-sm text-label-sm font-semibold">
-          <span className="material-symbols-outlined text-[14px]">psychology</span>
-          <span>NutriAI Core</span>
+        <div className="flex items-center gap-2">
+          {message.timestamp && (
+            <span className="text-xs text-slate-400 font-medium">
+              {message.timestamp}
+            </span>
+          )}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-primary font-label-sm text-label-sm font-semibold">
+            <span className="material-symbols-outlined text-[14px]">psychology</span>
+            <span>NutriAI Core</span>
+          </div>
         </div>
       </div>
       
@@ -65,7 +78,7 @@ export default function MessageBubble({ message, onSelectClaim }: { message: Mes
               <button 
                 key={idx} 
                 onClick={() => onSelectClaim(claim)}
-                className="takeaway-pill group px-4 py-2.5 rounded-full font-label-md text-label-md flex items-center gap-2 transition-all duration-200 bg-white text-slate-800 hover:bg-teal-50/50 shadow-sm border border-slate-200/80" 
+                className={`takeaway-pill group px-4 py-2.5 rounded-full font-label-md text-label-md flex items-center gap-2 transition-all duration-200 border ${selectedClaim?.claim_text === claim.claim_text ? 'bg-teal-100 text-teal-900 border-teal-300 shadow-md ring-2 ring-teal-500/20' : 'bg-white text-slate-800 hover:bg-teal-50/50 shadow-sm border-slate-200/80'}`}
                 type="button"
               >
                 <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">{idx + 1}</span>

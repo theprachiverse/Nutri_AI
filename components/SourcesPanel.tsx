@@ -3,7 +3,7 @@ import { Claim } from '@/lib/schema';
 
 export default function SourcesPanel({ selectedClaim }: { selectedClaim: Claim | null }) {
   return (
-    <aside className="w-full lg:w-96 bg-white p-6 sm:p-7 flex flex-col justify-between shadow-sm min-h-full border-l border-slate-200" id="sources-sidebar">
+    <aside className="w-full lg:w-96 bg-white p-6 sm:p-7 flex flex-col justify-between shadow-sm border-l border-slate-200 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] overflow-y-auto" id="sources-sidebar">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-surface-container">

@@ -9,6 +9,7 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   claims?: Claim[];
+  timestamp?: string;
 }
 
 export default function ChatWindow() {
@@ -18,8 +19,9 @@ export default function ChatWindow() {
   const [conversationId, setConversationId] = useState<string | null>(null);
 
   const handleSend = async (text: string) => {
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     // Add user message to UI
-    const newMessages: Message[] = [...messages, { role: 'user', content: text }];
+    const newMessages: Message[] = [...messages, { role: 'user', content: text, timestamp: currentTime }];
     setMessages(newMessages);
     setIsLoading(true);
 
@@ -48,13 +50,14 @@ export default function ChatWindow() {
         { 
           role: 'assistant', 
           content: data.answer_text || data.error || 'No answer provided.', 
-          claims: data.claims || [] 
+          claims: data.claims || [],
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
     } catch (error) {
       setMessages([
         ...newMessages,
-        { role: 'assistant', content: 'Something went wrong. Please try again.' }
+        { role: 'assistant', content: 'Something went wrong. Please try again.', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
       ]);
     } finally {
       setIsLoading(false);
@@ -95,6 +98,7 @@ export default function ChatWindow() {
                 messages={messages} 
                 isLoading={isLoading} 
                 onSelectClaim={setSelectedClaim} 
+                selectedClaim={selectedClaim}
               />
               <InputBox onSend={handleSend} disabled={isLoading} />
             </div>
