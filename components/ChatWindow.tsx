@@ -75,18 +75,7 @@ export default function ChatWindow() {
               <span className="font-label-sm text-label-sm text-primary">Ready to help</span>
             </div>
           </div>
-          <nav className="hidden md:flex items-center p-1.5 bg-surface-container-low/90 rounded-full gap-space-xs">
-            <a aria-current="page" className="px-5 py-2 transition-all bg-primary-container text-on-primary-container font-label-md text-label-md rounded-full shadow-sm" href="#">Nutrition Chat</a>
-            <a className="px-5 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" href="#">Saved Guides</a>
-            <a className="px-5 py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" href="#">My Wellness Profile</a>
-          </nav>
           <div className="flex items-center gap-space-sm">
-            <button aria-label="Assistant Inspiration" className="w-10 h-10 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-high transition-colors flex items-center justify-center text-on-surface-variant hover:text-on-surface" type="button">
-              <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
-            </button>
-            <button aria-label="Settings" className="w-10 h-10 rounded-full bg-surface-container-lowest/90 hover:bg-surface-container-high transition-colors flex items-center justify-center text-on-surface-variant hover:text-on-surface" type="button">
-              <span className="material-symbols-outlined text-[20px]">tune</span>
-            </button>
             <div className="relative ml-space-xs">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center ring-2 ring-surface-container-lowest">
                 <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
