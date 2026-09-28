@@ -3,11 +3,7 @@ import { zodResponseFormat } from 'openai/helpers/zod';
 import { NutritionResponseSchema, NutritionResponse } from './schema';
 import { SYSTEM_PROMPT } from './systemPrompt';
 
-const openai = new OpenAI({ 
-  apiKey: process.env.GROQ_API_KEY, 
-  baseURL: 'https://api.groq.com/openai/v1',
-  maxRetries: 3
-});
+
 
 interface ModelMessage {
   role: 'user' | 'assistant';
@@ -15,6 +11,12 @@ interface ModelMessage {
 }
 
 export async function callModel(messages: ModelMessage[]): Promise<NutritionResponse> {
+  const openai = new OpenAI({ 
+    apiKey: process.env.GROQ_API_KEY, 
+    baseURL: 'https://api.groq.com/openai/v1',
+    maxRetries: 3
+  });
+
   console.log('model called');
   try {
     const completion = await openai.beta.chat.completions.parse({
