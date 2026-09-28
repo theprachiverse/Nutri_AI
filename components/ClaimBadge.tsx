@@ -1,51 +1,14 @@
-'use client';
+import React from 'react';
 import { Claim } from '@/lib/schema';
 
-interface ClaimBadgeProps {
-  claim:      Claim;
-  isSelected: boolean;
-  onSelect:   (claim: Claim) => void;
-  index?:     number;
-}
-
-export default function ClaimBadge({ claim, isSelected, onSelect, index = 0 }: ClaimBadgeProps) {
+export default function ClaimBadge({ claim, onSelect }: { claim: Claim, onSelect: (claim: Claim) => void }) {
   return (
-    <button
+    <button 
       onClick={() => onSelect(claim)}
-      className={`
-        group px-3.5 py-2 rounded-full font-label-md text-label-md
-        flex items-center gap-2 transition-all duration-200 relative overflow-hidden
-        ${isSelected
-          ? 'gradient-emerald text-white shadow-[0_4px_14px_rgba(16,185,129,0.35)] scale-[1.03]'
-          : 'glass-1 text-on-surface hover:bg-mint-mist hover:text-forest hover:border-mint hover:scale-[1.01] hover:shadow-[0_2px_8px_rgba(16,185,129,0.12)]'
-        }
-      `}
+      className="inline-flex items-center text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1 mr-2 mt-2 hover:bg-emerald-100 transition-colors cursor-pointer"
     >
-      {/* Active shimmer */}
-      {isSelected && (
-        <div className="absolute inset-0 shimmer opacity-20 pointer-events-none" />
-      )}
-
-      {/* Number badge */}
-      <span
-        className={`
-          relative z-10 w-5 h-5 rounded-full flex items-center justify-center font-bold text-[11px] shrink-0 transition-all
-          ${isSelected
-            ? 'bg-white/25 text-white'
-            : 'bg-mint-mist text-forest border border-mint group-hover:bg-emerald/10 group-hover:border-emerald/30'
-          }
-        `}
-      >
-        {index + 1}
-      </span>
-
-      <span className="relative z-10 leading-tight">{claim.claim_text}</span>
-
-      {isSelected && (
-        <span className="relative z-10 material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5 ml-0.5">
-          arrow_forward
-        </span>
-      )}
+      <span className="material-symbols-outlined text-[14px] mr-1">science</span>
+      {claim.claim_text.length > 40 ? claim.claim_text.substring(0, 40) + '...' : claim.claim_text}
     </button>
   );
 }

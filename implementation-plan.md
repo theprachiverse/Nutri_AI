@@ -597,7 +597,7 @@
   2. Copy the **Connection String** (URI format) from Settings → Database.
   3. Store it — you'll add it to Vercel.
 
-- [ ] **7.2 — Prepare for Postgres**
+- [x] **7.2 — Prepare for Postgres**
   In `prisma/schema.prisma`, update:
   ```prisma
   datasource db {
@@ -608,7 +608,7 @@
   Update `rawResponse` field type from `String?` to `Json?`.
   Commit the change.
 
-- [ ] **7.3 — Add `prisma migrate deploy` to build**
+- [x] **7.3 — Add `prisma migrate deploy` to build**
   In `package.json`:
   ```json
   "scripts": {

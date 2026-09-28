@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
       conversationId: conversation.id,
       role: 'assistant',
       content: response.answer_text,
-      rawResponse: JSON.stringify(response),
+      rawResponse: response,
     },
   });
 
