@@ -95,7 +95,10 @@ export default function ChatWindow() {
           </div>
           <div className="flex items-center gap-space-sm">
             <button 
-              onClick={() => setIsSourcesOpen(!isSourcesOpen)}
+              onClick={() => {
+                setIsSourcesOpen(!isSourcesOpen);
+                if (isSourcesOpen) setSelectedClaim(null);
+              }}
               className="w-10 h-10 rounded-full hover:bg-surface-container-low text-primary transition-colors flex items-center justify-center"
               aria-label="Toggle Sources Panel"
             >
@@ -131,7 +134,10 @@ export default function ChatWindow() {
             {isSourcesOpen && (
               <SourcesPanel 
                 selectedClaim={selectedClaim} 
-                onClose={() => setIsSourcesOpen(false)} 
+                onClose={() => {
+                  setIsSourcesOpen(false);
+                  setSelectedClaim(null);
+                }} 
               />
             )}
           </div>

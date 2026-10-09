@@ -4,6 +4,7 @@ import { ClaimV2 as Claim } from '@/lib/schema';
 export default function SourceChunkCard({ claim }: { claim: Claim }) {
   const { citation } = claim;
   const [chunkText, setChunkText] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   
   useEffect(() => {
     // Fetch raw chunk text
@@ -60,9 +61,17 @@ export default function SourceChunkCard({ claim }: { claim: Claim }) {
           <span className="material-symbols-outlined text-[14px]">format_align_left</span>
           <span>{citation.section || 'General Text'}</span>
         </div>
-        <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap font-body-sm">
+        <div className={`text-sm leading-relaxed text-slate-700 whitespace-pre-wrap font-body-sm ${!isExpanded ? 'line-clamp-5' : ''}`}>
           {renderHighlightedText()}
-        </p>
+        </div>
+        {chunkText && chunkText.length > 250 && (
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)} 
+            className="text-primary font-semibold text-xs mt-2 hover:underline focus:outline-none"
+          >
+            {isExpanded ? 'Show less' : 'Read more...'}
+          </button>
+        )}
       </div>
       
       <div className="flex items-center justify-end">
