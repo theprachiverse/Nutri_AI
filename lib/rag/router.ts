@@ -10,7 +10,8 @@ export type RouteContext = {
 };
 
 const AUTHORITIES: Record<string, string> = {
-  'who': 'D5',
+  'world health organization': 'D5',
+  'w.h.o.': 'D5',
   'fssai': 'D4',
   'dgi': 'D1',
   'nin': 'D1',

@@ -49,11 +49,11 @@
 
 **Status:** answered
 
-**Answer:** Boiling vegetables can cause some vitamin loss—especially B‑complex and vitamin C if the water is discarded or cooking is prolonged—but it does not destroy all the vitamins.
+**Answer:** Boiling vegetables does not destroy all their vitamins; it can lead to loss of some water‑soluble vitamins, especially if the cooking water is discarded or boiling is prolonged.
 
 **Claims:**
-- Boiling can lead to loss of some vitamins, but does not eliminate all vitamins.
-  - *Citation:* [undefined (ICMR – National Institute of Nutrition (India) 2024)] B complex vitamins and vitamin C may be lost if the cooking water after boiling is discarded. Prolonged boiling also results in the loss of vitamins.
+- Boiling can cause loss of some vitamins, such as B complex and vitamin C, especially if the water is discarded, but it does not eliminate all vitamins.
+  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] B complex vitamins and vitamin C may be lost if the cooking water after boiling is discarded.
 
 ---
 

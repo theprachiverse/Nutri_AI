@@ -60,7 +60,7 @@ export async function answerQuestion(
   }
 
   // 6. Build Context
-  const contextXml = buildContext(reranked);
+  const { xmlStr: contextXml, selectedChunks } = buildContext(reranked);
 
   // 7. LLM Generation
   const initialResponse = await callModel([
@@ -68,13 +68,13 @@ export async function answerQuestion(
   ]);
 
   // 8. Verifier
-  const { response: verifiedResponse, droppedClaims } = await verifyAndCorrect(initialResponse, reranked, question);
+  const { response: verifiedResponse, droppedClaims } = await verifyAndCorrect(initialResponse, selectedChunks, question);
   if (verifiedResponse.status === 'not_covered') {
     (verifiedResponse as any).searched_documents = routed.docIds || ["All"];
   }
 
   // 9. Hydration
-  const finalResponse = await hydrateResponse(verifiedResponse, reranked);
+  const finalResponse = await hydrateResponse(verifiedResponse, selectedChunks);
 
   // 10. Database Orchestration
   const message = await prisma.message.create({

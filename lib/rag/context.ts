@@ -5,7 +5,7 @@ import { RAG_CONFIG } from './config';
 // Load the exact tokenizer needed
 const enc = getEncoding('o200k_base');
 
-export function buildContext(chunks: (RetrievedChunk & { rerank_score?: number })[]): string {
+export function buildContext(chunks: (RetrievedChunk & { rerank_score?: number })[]): { xmlStr: string, selectedChunks: RetrievedChunk[] } {
   let totalTokens = 0;
   const maxTokens = RAG_CONFIG.context.max_budget_tokens || 2800;
   
@@ -30,9 +30,11 @@ ${chunk.section_heading ? `<heading>${chunk.section_heading}</heading>\n` : ''}$
     selectedChunks.push(chunk);
   }
   
-  return selectedChunks.map(chunk => {
+  const finalXml = selectedChunks.map(chunk => {
     return `<chunk id="${chunk.chunk_id}" doc="${chunk.doc_id}">
 ${chunk.section_heading ? `<heading>${chunk.section_heading}</heading>\n` : ''}${chunk.text}
 </chunk>`.trim();
   }).join('\n\n');
+
+  return { xmlStr: finalXml, selectedChunks };
 }
