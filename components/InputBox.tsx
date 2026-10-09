@@ -35,7 +35,7 @@ export default function InputBox({ onSend, disabled }: { onSend: (text: string) 
           autoComplete="off" 
           className="font-body-md text-body-md text-on-surface placeholder:text-outline/70 flex-1 bg-transparent outline-none focus:outline-none focus:ring-0 border-none py-1 resize-none min-h-[32px] max-h-32" 
           id="chat-input" 
-          placeholder="Ask about food nutrition according to our corpus, but keep it general..." 
+          placeholder="Ask a question about food, nutrients, or safety guidelines..." 
           rows={1}
           value={text}
           onChange={(e) => setText(e.target.value)}
