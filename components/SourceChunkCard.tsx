@@ -33,7 +33,7 @@ export default function SourceChunkCard({ claim }: { claim: Claim }) {
     return (
       <>
         {before}
-        <mark className="bg-amber-200/60 text-amber-900 rounded-sm px-1 py-0.5">{match}</mark>
+        <mark className="bg-yellow-200 text-yellow-900 rounded-sm px-1 py-0.5" style={{ WebkitBoxDecorationBreak: 'clone', boxDecorationBreak: 'clone' }}>{match}</mark>
         {after}
       </>
     );
