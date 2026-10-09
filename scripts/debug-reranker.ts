@@ -4,7 +4,7 @@ import { getEncoding } from 'js-tiktoken';
 
 async function test() {
   const query = 'Is coffee good for health?';
-  const chunks = await hybridSearch(query, 'standard', null);
+  const chunks = await hybridSearch(query, 'all', null);
   
   const reranked = await reranker.rerank(query, chunks);
   
