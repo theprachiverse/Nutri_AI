@@ -149,13 +149,13 @@ This document provides a highly detailed, phase-by-phase execution plan for Mile
 ### Tasks
 - [x] **6.1 LLM Generation (`lib/model.ts`, `lib/systemPrompt.ts`):** 
   - Write System Prompt v2 enforcing strict grounding, marker constraints, and anti-blending rules.
-  - Configure the Groq call (`openai/gpt-oss-120b`) with `temperature: 0`, `reasoning_effort: low`, and `zodResponseFormat` mapped to `ModelOutputSchema`.
+  - Configure the Groq call (`openai/gpt-oss-120b`) with `temperature: 0`, `max_completion_tokens: 4000` (to prevent JSON truncation), and `zodResponseFormat` mapped to `ModelOutputSchema`.
 - [x] **6.2 Deterministic Verifier & Self-Correction (`lib/rag/verify.ts`):** 
   - **V1-V2:** Assert `chunk_id` exists in context and `quote` is a near-perfect substring (fuzzy ratio >= 0.9).
   - **V3-V4:** Normalize and assert that all numeric tokens in the claim/answer appear in the cited chunk. 
   - **V5-V7:** Enforce marker integrity (strip orphans), prevent blending (no sentences citing multiple docs), and validate disagreement integrity.
   - **Self-Correction Loop:** If verification fails (e.g., dropped claims due to hallucination), trigger a self-correction LLM pass providing the errors and asking for a rewritten, compliant response before falling back to `not_covered`.
-  - **V8-V9:** Handle LLM output scope violations and drop to `not_covered` if zero valid claims remain after correction.
+  - **V8-V9:** Handle LLM output scope violations and drop to `not_covered` if zero valid claims remain after correction. In a `not_covered` state, the LLM provides a polite explanation in `answer_text` instead of leaving it completely empty.
 - [x] **6.3 Hydration & Orchestration (`lib/rag/hydrate.ts`, `lib/pipeline.ts`):** 
   - Map validated `chunk_id`s to full `Citation` objects, dynamically appending `#page=N` to the PDF URLs.
   - Tie the entire flow together in `answerQuestion()`, ensuring `RetrievalLog`, `Message`, and `MessageCitation` rows are transacted into Postgres.
@@ -172,8 +172,8 @@ This document provides a highly detailed, phase-by-phase execution plan for Mile
   - Create `GET /api/documents` to serve the corpus manifest list for the UI filter.
   - Create `GET /api/chunks/[chunkId]` to fetch raw chunk text for the Sources panel.
 - [x] **7.2 UI Refusals & Status Handling (`components/RefusalCard.tsx`):** 
-  - Implement a red/amber card for `out_of_scope` safety rejections.
-  - Implement a neutral card for `not_covered` honesty rejections, explicitly listing the `searched_documents`.
+  - Implement a red `error-container` card for `out_of_scope` safety rejections.
+  - Implement a neutral `tertiary-fixed` card for `not_covered` honesty rejections, explicitly listing the `searched_documents`.
 - [x] **7.3 Rich Citation UI (`components/*`):** 
   - **`ClaimBadge.tsx`**: Render publisher and year (e.g., `WHO · 2023`).
   - **`SourcesPanel.tsx`** & **`SourceChunkCard.tsx`**: Render the full chunk context, highlighting the exact `quote`. Include hierarchy, population tags, and PDF outbound links.

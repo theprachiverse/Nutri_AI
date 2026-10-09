@@ -64,6 +64,7 @@ This document details the corner cases and edge scenarios for each phase outline
 
 ### 1. Retrieval Edge Cases
 *   **Zero Results Post-Filtering:** The hybrid search yields results, but the aggressive `population_excluded` filter removes all of them, resulting in an empty context.
+*   **Unindexed Documents:** A document (e.g., D5 WHO Guidelines) is defined in the manifest but its chunks have not yet been ingested into the database, resulting in an automatic zero-result drop for related questions.
 *   **Identical Scores:** Multiple chunks returning the exact same cosine score (e.g., boilerplate text repeated across documents).
 *   **Vocabulary Mismatch (Lexical):** The user's query uses a synonym that doesn't exist in the document, failing the `websearch_to_tsquery` while dense search returns low confidence.
 *   **Cross-Encoder Latency & Truncation:** Passing 20 candidates through `Xenova/ms-marco-MiniLM-L-6-v2` locally takes too long, or the chunk exceeds the tokenizer's max length, leading to arbitrary truncation and skewed re-rank scores.
@@ -79,12 +80,13 @@ This document details the corner cases and edge scenarios for each phase outline
 ### 1. Generation Edge Cases
 *   **Numeric Hallucinations (Word vs. Number):** The LLM outputs "five percent" instead of "5%", which might fail the V3-V4 numeric token strict assertion.
 *   **Format Non-Compliance:** The LLM ignores the XML tag constraints or the JSON Schema, outputting plain text instead.
+*   **Token Truncation:** Structured JSON outputs are truncated midway due to `max_tokens` limits. This is mitigated by explicitly setting `max_completion_tokens: 4000` to give the LLM headroom.
 *   **Refusal to Synthesize:** The model correctly retrieves the data but outputs "I cannot answer this" because it triggers its own internal safety filters (despite passing the system's scope guard).
 
 ### 2. Verification Edge Cases
 *   **Near-Miss Quotes:** The LLM hallucinates a quote that gets a 0.89 fuzzy match ratio—just below the 0.9 threshold, causing a valid answer to be dropped.
 *   **Disagreement Handling Failure:** The model detects a disagreement but fails to properly cite both chunks, causing the Verifier to strip one side of the argument.
-*   **Empty Output Drop:** The Verifier aggressively strips every single generated claim due to minor infractions, resulting in an unexpected and delayed `not_covered` response to the user.
+*   **Empty Output Drop:** The Verifier aggressively strips every single generated claim due to minor infractions, or the LLM cannot verify the data. This previously resulted in a completely blank response, but is now mitigated by generating a polite explanation in the `answer_text` field instead.
 
 ---
 
@@ -95,3 +97,4 @@ This document details the corner cases and edge scenarios for each phase outline
 *   **Rapid Fire Requests:** A user mashing the "Send" button triggering multiple concurrent pipeline executions for the same session.
 *   **Markdown Rendering Conflicts:** The exact `quote` highlighted in the UI fails to match because of differences in how the frontend and backend parse whitespace or Markdown tokens.
 *   **PDF Pagination Offset:** The UI attempts to link to `#page=N`, but the PDF's internal logical page numbering (e.g., Roman numerals for TOC) is offset from the absolute page index, linking the user to the wrong page.
+*   **Theme Token Overriding:** Relying on default Tailwind colors (e.g., `bg-amber-50`) which were overridden in `tailwind.config.ts`, causing elements like `RefusalCard` to appear transparent. Fixed by strictly adhering to the semantic design system tokens (e.g., `tertiary-fixed`, `error-container`).

@@ -56,7 +56,7 @@ This document outlines the comprehensive evaluation methodology for Milestone 2.
 **Dataset:** The original 10 baseline questions from M1.
 
 ### Key Metrics
-*   **Output Stability:** Ensure that answers to the M1 questions do not contain drifting numbers or fabricated attributions compared to the M1 baseline.
+*   **Output Stability:** Ensure that answers to the M1 questions do not contain drifting numbers or fabricated attributions compared to the M1 baseline. For unverified queries, ensure the fallback output gracefully provides an explanation (e.g., "I could not find information...") rather than failing completely.
 *   **Failure Logging:** Any degradation must be captured in `failure-log/results-m2.md` and resolved before release.
 
 ---
