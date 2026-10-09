@@ -15,7 +15,7 @@ async function main() {
     const q = bank[i];
     console.log(`\n[Q${i+1}] ${q.question}`);
     const route = await routeAndExpandQuery(q.question, []);
-    const chunks = await hybridSearch(route.expandedQueries[0], 'all', route.population);
+    const chunks = await hybridSearch(route.expandedQueries[0], 'all', null, route.docIds);
 
     let rank = -1;
     for (let j = 0; j < chunks.length; j++) {
