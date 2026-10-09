@@ -26,7 +26,7 @@ export async function callModel(messages: ModelMessage[]): Promise<z.infer<typeo
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages,
       ],
-      max_tokens: 2000,
+      max_completion_tokens: 4000,
       temperature: 0,
       response_format: zodResponseFormat(ModelOutputSchema, 'nutrition_response'),
     });
