@@ -35,7 +35,7 @@ async function main() {
         md += `**Claims:**\n`;
         response.claims.forEach(c => {
           md += `- ${c.claim_text}\n`;
-          md += `  - *Citation:* [${c.citation.doc_name} (${c.citation.publisher} ${c.citation.year})] ${c.citation.quote}\n`;
+          md += `  - *Citation:* [${c.citation.document_title} (${c.citation.publisher} ${c.citation.year})] ${c.citation.quote}\n`;
         });
       }
       md += `\n---\n\n`;
