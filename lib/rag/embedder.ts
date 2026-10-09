@@ -1,15 +1,8 @@
 class Embedder {
   private static instance: Embedder;
-  private pipelinePromise: Promise<any>;
+  private pipelinePromise: Promise<any> | null = null;
 
-  private constructor() {
-    this.pipelinePromise = import('@huggingface/transformers').then(
-      ({ pipeline, env }) => {
-        env.cacheDir = '/tmp/.cache';
-        return pipeline('feature-extraction', 'Xenova/bge-small-en-v1.5', { dtype: 'q8' });
-      }
-    );
-  }
+  private constructor() {}
 
   public static getInstance(): Embedder {
     if (!Embedder.instance) {
@@ -18,8 +11,20 @@ class Embedder {
     return Embedder.instance;
   }
 
+  private getPipeline() {
+    if (!this.pipelinePromise) {
+      this.pipelinePromise = import('@huggingface/transformers').then(
+        ({ pipeline, env }) => {
+          env.cacheDir = '/tmp/.cache';
+          return pipeline('feature-extraction', 'Xenova/bge-small-en-v1.5', { dtype: 'q8' });
+        }
+      );
+    }
+    return this.pipelinePromise;
+  }
+
   public async embed(text: string, isQuery: boolean = false): Promise<number[]> {
-    const pipe = await this.pipelinePromise;
+    const pipe = await this.getPipeline();
     const prefix = isQuery ? "Represent this sentence for searching relevant passages: " : "";
     const input = prefix + text;
     
@@ -34,7 +39,7 @@ class Embedder {
   public async embedBatch(texts: string[], isQuery: boolean = false): Promise<number[][]> {
     if (texts.length === 0) return [];
     
-    const pipe = await this.pipelinePromise;
+    const pipe = await this.getPipeline();
     const prefix = isQuery ? "Represent this sentence for searching relevant passages: " : "";
     const inputs = texts.map(text => prefix + text);
     

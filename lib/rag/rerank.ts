@@ -2,16 +2,9 @@ import { RetrievedChunk } from './retrieve';
 
 class Reranker {
   private static instance: Reranker;
-  private modelPromise: Promise<any>;
+  private modelPromise: Promise<any> | null = null;
 
-  private constructor() {
-    this.modelPromise = import('@huggingface/transformers').then(async ({ AutoTokenizer, AutoModelForSequenceClassification, env }) => {
-      env.cacheDir = '/tmp/.cache';
-      const tokenizer = await AutoTokenizer.from_pretrained('Xenova/ms-marco-MiniLM-L-6-v2');
-      const model = await AutoModelForSequenceClassification.from_pretrained('Xenova/ms-marco-MiniLM-L-6-v2', { dtype: 'q8' });
-      return { tokenizer, model };
-    });
-  }
+  private constructor() {}
 
   public static getInstance(): Reranker {
     if (!Reranker.instance) {
@@ -20,10 +13,22 @@ class Reranker {
     return Reranker.instance;
   }
 
+  private getModel() {
+    if (!this.modelPromise) {
+      this.modelPromise = import('@huggingface/transformers').then(async ({ AutoTokenizer, AutoModelForSequenceClassification, env }) => {
+        env.cacheDir = '/tmp/.cache';
+        const tokenizer = await AutoTokenizer.from_pretrained('Xenova/ms-marco-MiniLM-L-6-v2');
+        const model = await AutoModelForSequenceClassification.from_pretrained('Xenova/ms-marco-MiniLM-L-6-v2', { dtype: 'q8' });
+        return { tokenizer, model };
+      });
+    }
+    return this.modelPromise;
+  }
+
   public async rerank(query: string, chunks: RetrievedChunk[]): Promise<(RetrievedChunk & { rerank_score: number })[]> {
     if (chunks.length === 0) return [];
     
-    const { tokenizer, model } = await this.modelPromise;
+    const { tokenizer, model } = await this.getModel();
     const reranked = [];
 
     for (const chunk of chunks) {

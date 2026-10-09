@@ -45,7 +45,8 @@ export default function ChatWindow() {
       });
 
       if (!res.ok) {
-        throw new Error('API error');
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `API error: ${res.status}`);
       }
 
       const data = await res.json();
@@ -65,10 +66,10 @@ export default function ChatWindow() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
-    } catch (error) {
+    } catch (error: any) {
       setMessages([
         ...newMessages,
-        { role: 'assistant', content: 'Something went wrong. Please try again.', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), isError: true }
+        { role: 'assistant', content: error.message || 'Something went wrong. Please try again.', timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), isError: true }
       ]);
     } finally {
       setIsLoading(false);
@@ -81,7 +82,11 @@ export default function ChatWindow() {
         <div className="h-20 w-full px-gutter flex items-center justify-between">
           <div className="flex items-center gap-space-md">
             <div className="flex items-center gap-space-sm cursor-pointer" onClick={() => { setMessages([]); setConversationId(null); setSelectedClaim(null); }}>
-              <img alt="NutriAI Sprout Logo" className="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WB9ISPHPz33N5SLOdl-StatpBMp7cVu-sl3YqrWEq88HFtYAGdmyiCVlG-G2kiNt2o-ICRbJ0F6gPUCJrvkOnl4jTGgZPYSpFlLicA5hhj6suTts8fyAvXDMrGWeEq90LTB8V72FhLl01wfnQDV7miVbOeH-6e2uEPnM_niqvlGiTirNrYve7sKuBzhQd0-xrMO112C8OGiDhR3X-G0TEXhkuZG1W2PE0M60mtNXeOF5hprLX5NAmA-g"/>
+              <svg className="h-8 w-auto text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 20h10" />
+                <path d="M10 20c5.5-1.5 7-6 7-10 0-4-3-6-3-6s-2 2-2 6c0 4-1.5 8.5-7 10" />
+                <path d="M10 20c-5.5-1.5-7-6-7-10 0-4 3-6 3-6s2 2 2 6c0 4 1.5 8.5 7 10" />
+              </svg>
               <span className="font-headline-md text-headline-md text-primary tracking-tight">NutriAI</span>
             </div>
             <div className="hidden sm:flex items-center gap-space-xs bg-surface-container-low px-3 py-1 rounded-full">
