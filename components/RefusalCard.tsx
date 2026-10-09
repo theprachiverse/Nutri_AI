@@ -8,15 +8,15 @@ interface RefusalCardProps {
 export default function RefusalCard({ status, message }: RefusalCardProps) {
   if (status === 'out_of_scope') {
     return (
-      <div className="w-full bg-red-50 rounded-3xl shadow-md p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-red-100 mb-6">
-        <div className="relative z-10 flex items-center justify-between pb-4 border-b border-red-200">
+      <div className="w-full bg-error-container rounded-3xl shadow-md p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-error mb-6">
+        <div className="relative z-10 flex items-center justify-between pb-4 border-b border-error/20">
           <div className="flex items-center gap-2.5">
-            <span className="material-symbols-outlined text-red-600">gavel</span>
-            <span className="font-label-md text-label-md font-semibold text-red-900">Safety Policy Violation</span>
+            <span className="material-symbols-outlined text-error">gavel</span>
+            <span className="font-label-md text-label-md font-semibold text-on-error-container">Safety Policy Violation</span>
           </div>
         </div>
         <div className="relative z-10 my-4">
-          <p className="font-body-md text-body-md text-red-800 leading-relaxed">
+          <p className="font-body-md text-body-md text-on-error-container leading-relaxed">
             {message}
           </p>
         </div>
@@ -25,19 +25,19 @@ export default function RefusalCard({ status, message }: RefusalCardProps) {
   }
 
   return (
-    <div className="w-full bg-amber-50 rounded-3xl shadow-md p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-amber-100 mb-6">
-      <div className="relative z-10 flex items-center justify-between pb-4 border-b border-amber-200">
+    <div className="w-full bg-tertiary-fixed rounded-3xl shadow-md p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-tertiary-fixed-dim mb-6">
+      <div className="relative z-10 flex items-center justify-between pb-4 border-b border-tertiary-fixed-dim">
         <div className="flex items-center gap-2.5">
-          <span className="material-symbols-outlined text-amber-600">search_off</span>
-          <span className="font-label-md text-label-md font-semibold text-amber-900">Information Not Found</span>
+          <span className="material-symbols-outlined text-tertiary">search_off</span>
+          <span className="font-label-md text-label-md font-semibold text-on-tertiary-fixed">Information Not Found</span>
         </div>
       </div>
       <div className="relative z-10 my-4">
-        <p className="font-body-md text-body-md text-amber-800 leading-relaxed">
+        <p className="font-body-md text-body-md text-on-tertiary-fixed leading-relaxed">
           {message}
         </p>
-        <div className="mt-4 p-4 bg-amber-100/50 rounded-xl border border-amber-200/50">
-          <p className="font-caption text-caption text-amber-700">
+        <div className="mt-4 p-4 bg-tertiary-container/10 rounded-xl border border-tertiary-fixed-dim">
+          <p className="font-caption text-caption text-on-tertiary-fixed-variant">
             We searched our dietary corpus (including ICMR, WHO, FDA) but could not find verified claims covering your specific question.
           </p>
         </div>
