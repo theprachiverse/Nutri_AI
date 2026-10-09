@@ -18,6 +18,10 @@ export default function SourceChunkCard({ claim }: { claim: Claim }) {
       .catch(console.error);
   }, [citation.chunk_id]);
 
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [claim.claim_text, citation.chunk_id]);
+
   // Function to highlight the quote in the raw text
   const renderHighlightedText = () => {
     if (!chunkText) return <div className="h-20 animate-pulse bg-slate-100 rounded-md"></div>;
@@ -33,7 +37,7 @@ export default function SourceChunkCard({ claim }: { claim: Claim }) {
     return (
       <>
         {before}
-        <mark className="bg-yellow-200 text-yellow-900 rounded-sm px-1 py-0.5" style={{ WebkitBoxDecorationBreak: 'clone', boxDecorationBreak: 'clone' }}>{match}</mark>
+        <mark className="bg-amber-200 text-amber-900 rounded-sm px-1 py-0.5" style={{ WebkitBoxDecorationBreak: 'clone', boxDecorationBreak: 'clone' }}>{match}</mark>
         {after}
       </>
     );
