@@ -37,13 +37,6 @@ export async function hybridSearch(
   const results = await prisma.$queryRaw<RetrievedChunk[]>`
     WITH vector_search AS (
       SELECT id AS chunk_id,
-             "documentId" AS doc_id,
-             text,
-             "sectionHeading" AS section_heading,
-             "pageStart" AS page_start,
-             "pageEnd" AS page_end,
-             population,
-             "excludedPop" AS population_excluded,
              ROW_NUMBER() OVER (ORDER BY embedding <=> ${vectorStr}::vector) AS vector_rank
       FROM "Chunk"
       WHERE (${userDemographic}::text IS NULL OR NOT (${userDemographic}::text = ANY("excludedPop")))
@@ -63,34 +56,28 @@ export async function hybridSearch(
     ),
     rrf AS (
       SELECT 
-        v.chunk_id,
-        v.doc_id,
-        v.text,
-        v.section_heading,
-        v.page_start,
-        v.page_end,
-        v.population,
-        v.population_excluded,
+        COALESCE(v.chunk_id, f.chunk_id) AS chunk_id,
         COALESCE(1.0 / (${rrfK} + v.vector_rank), 0.0) + 
         COALESCE(1.0 / (${rrfK} + f.fts_rank), 0.0) AS base_rrf_score
       FROM vector_search v
-      LEFT JOIN fts_search f ON v.chunk_id = f.chunk_id
+      FULL OUTER JOIN fts_search f ON v.chunk_id = f.chunk_id
     )
     SELECT 
-      chunk_id,
-      doc_id,
-      text,
-      section_heading,
-      page_start,
-      page_end,
-      population,
-      population_excluded,
+      c.id AS chunk_id,
+      c."documentId" AS doc_id,
+      c.text,
+      c."sectionHeading" AS section_heading,
+      c."pageStart" AS page_start,
+      c."pageEnd" AS page_end,
+      c.population,
+      c."excludedPop" AS population_excluded,
       CASE 
-        WHEN ${userDemographic}::text IS NOT NULL AND ${userDemographic}::text = ANY(population) 
-        THEN base_rrf_score + ${boost}
-        ELSE base_rrf_score
+        WHEN ${userDemographic}::text IS NOT NULL AND ${userDemographic}::text = ANY(c.population) 
+        THEN r.base_rrf_score + ${boost}
+        ELSE r.base_rrf_score
       END as rrf_score
-    FROM rrf
+    FROM rrf r
+    JOIN "Chunk" c ON c.id = r.chunk_id
     ORDER BY rrf_score DESC
     LIMIT ${kCandidates};
   `;

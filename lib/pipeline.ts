@@ -35,12 +35,21 @@ export async function answerQuestion(
   }
 
   // 3. Retrieval
-  const candidates = await hybridSearch(
-    routed.expandedQueries[0], 
-    routed.mode, 
-    population || null, 
-    routed.docIds || null
+  const retrievalPromises = routed.expandedQueries.map(q => 
+    hybridSearch(q, routed.mode, population || null, routed.docIds || null)
   );
+  const retrievalResults = await Promise.all(retrievalPromises);
+  
+  const candidatesMap = new Map<string, any>();
+  for (const res of retrievalResults) {
+    for (const c of res) {
+      if (!candidatesMap.has(c.chunk_id) || candidatesMap.get(c.chunk_id).rrf_score < c.rrf_score) {
+        candidatesMap.set(c.chunk_id, c);
+      }
+    }
+  }
+  const candidates = Array.from(candidatesMap.values());
+  candidates.sort((a, b) => b.rrf_score - a.rrf_score);
   
   // 4. Reranking
   const reranked = await reranker.rerank(routed.expandedQueries[0], candidates);
