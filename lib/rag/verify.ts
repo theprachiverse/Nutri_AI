@@ -59,9 +59,9 @@ export async function verifyAndCorrect(
 
   const { validClaims, errors } = validate(response);
 
-  if (errors.length > 0) {
-    console.log('Verification failed! Errors:', errors);
-    // V8-V9: Trigger self-correction LLM pass
+  if (validClaims.length === 0 && errors.length > 0) {
+    console.log('All claims failed verification! Errors:', errors);
+    // V8-V9: Trigger self-correction LLM pass since we have no valid claims left
     const correctionPrompt = `
       Question: ${question}
       Context XML:
@@ -90,9 +90,14 @@ export async function verifyAndCorrect(
       
     } catch (e) {
       console.error('Self correction failed', e);
-      return { response: { status: 'not_covered' as const, answer_text: "Verification failed.", claims: [], disagreements: null }, droppedClaims };
+      return { response: { status: 'not_covered' as const, answer_text: "We found some information, but it could not be strictly verified against our sources.", claims: [], disagreements: null }, droppedClaims };
     }
   }
 
+  // If we have at least one valid claim, we just drop the bad ones and proceed without a costly second LLM pass.
+  if (errors.length > 0) {
+    console.log('Partial verification failure. Dropping bad claims:', errors);
+  }
+  
   return { response: { ...response, claims: validClaims }, droppedClaims };
 }

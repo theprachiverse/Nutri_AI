@@ -21,24 +21,26 @@
   }
 }
 
-/* ── Custom scrollbars ─────────────────────────────────────────────── */
+/* ── Custom scrollbars (Modern minimal style) ───────────────────────── */
 ::-webkit-scrollbar { 
-  width: 6px; 
-  height: 6px; 
+  width: 8px; 
+  height: 8px; 
 }
 ::-webkit-scrollbar-track { 
   background: transparent; 
 }
 ::-webkit-scrollbar-thumb { 
-  background-color: rgba(16, 185, 129, 0.3); 
+  background-color: rgba(0, 0, 0, 0.15); 
   border-radius: 10px; 
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover { 
-  background-color: rgba(16, 185, 129, 0.6); 
+  background-color: rgba(0, 0, 0, 0.3); 
 }
 * { 
   scrollbar-width: thin; 
-  scrollbar-color: rgba(16, 185, 129, 0.3) transparent; 
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
 }
 
 /* ── Background Canvas — botanical gradient ─────────────────────────────── */
