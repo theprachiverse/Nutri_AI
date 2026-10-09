@@ -1,0 +1,77 @@
+[
+  {
+    "question": "How much iron does an adult woman need per day?",
+    "expected_doc_id": "D1",
+    "expected_section": "General"
+  },
+  {
+    "question": "What are the main food sources of Vitamin B12?",
+    "expected_doc_id": "D1",
+    "expected_section": "General"
+  },
+  {
+    "question": "How much protein does a sedentary vegetarian adult need daily?",
+    "expected_doc_id": "D1",
+    "expected_section": "General"
+  },
+  {
+    "question": "How long can cooked chicken be safely stored in the fridge?",
+    "expected_doc_id": "D6",
+    "expected_section": "General"
+  },
+  {
+    "question": "Is it safe to refreeze meat that has been thawed in the fridge?",
+    "expected_doc_id": "D6",
+    "expected_section": "General"
+  },
+  {
+    "question": "Does boiling vegetables destroy all their vitamins?",
+    "expected_doc_id": "D1",
+    "expected_section": "General"
+  },
+  {
+    "question": "What is the safest internal temperature for cooked pork?",
+    "expected_doc_id": "D6",
+    "expected_section": "General"
+  },
+  {
+    "question": "Are artificial sweeteners harmful in moderate amounts?",
+    "expected_doc_id": "D5",
+    "expected_section": "General"
+  },
+  {
+    "question": "Is eating red meat a few times a week harmful long-term?",
+    "expected_doc_id": "D2",
+    "expected_section": "Section 1"
+  },
+  {
+    "question": "What is the limit for free sugars?",
+    "expected_doc_id": "D3",
+    "expected_section": "Nutrients - what you need to know > Sugar"
+  },
+  {
+    "question": "How much salt should adults have a day?",
+    "expected_doc_id": "D3",
+    "expected_section": "Nutrients - what you need to know > Salt"
+  },
+  {
+    "question": "How should used cooking oil be disposed of?",
+    "expected_doc_id": "D4",
+    "expected_section": "General"
+  },
+  {
+    "question": "What is the recommended limit for saturated fat?",
+    "expected_doc_id": "D3",
+    "expected_section": "Nutrients - what you need to know > Saturated fat"
+  },
+  {
+    "question": "Why is folic acid important?",
+    "expected_doc_id": "D3",
+    "expected_section": "Nutrients - what you need to know > Folic acid"
+  },
+  {
+    "question": "Who should take Vitamin D supplements?",
+    "expected_doc_id": "D3",
+    "expected_section": "Nutrients - what you need to know > Vitamin D"
+  }
+]

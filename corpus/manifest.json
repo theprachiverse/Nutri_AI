@@ -1,0 +1,72 @@
+{
+  "D1": {
+    "name": "Dietary Guidelines for Indians (DGI 2024)",
+    "publisher": "ICMR \u2013 National Institute of Nutrition (India)",
+    "legal_status": "guidance",
+    "year": 2024,
+    "source_url": "https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf",
+    "format": "PDF",
+    "retrieval_date": "2026-10-07T13:34:11.062261Z",
+    "sha256": "fc4bb5b1ee92a4d3d5dfe5d88eba15be6a50c096b709ce55d2bd4af1a1b91658"
+  },
+  "D2": {
+    "name": "Canada's Dietary Guidelines for Health Professionals and Policy Makers",
+    "publisher": "Health Canada",
+    "legal_status": "guidance",
+    "year": 2019,
+    "source_url": "https://publications.gc.ca/collections/collection_2019/sc-hc/H164-231-2019-eng.pdf",
+    "format": "PDF",
+    "retrieval_date": "2026-10-07T13:34:12.720650Z",
+    "sha256": "05013df29887687a3c5239571cd13b4df26711932f2fcc9922f317f2c356bed2"
+  },
+  "D3": {
+    "name": "Nutrients \u2013 What You Need to Know",
+    "publisher": "Food Standards Agency (UK)",
+    "legal_status": "guidance",
+    "year": 2026,
+    "source_url": "https://www.gov.uk/government/publications/nutrients-what-you-need-to-know/nutrients-what-you-need-to-know",
+    "format": "HTML",
+    "retrieval_date": "2026-10-07T13:34:13.994459Z",
+    "sha256": "88410da4f41b6ed89f01e8ad2054c2dab1cfd6c0c5b1583c83d7ad1a42f4c6aa"
+  },
+  "D4": {
+    "name": "Handling and Disposal of Used Cooking Oil (Guidance Note No. 06/2018)",
+    "publisher": "Food Safety and Standards Authority of India (FSSAI)",
+    "legal_status": "guidance",
+    "year": 2018,
+    "source_url": "https://eatrightindia.gov.in/ruco/file/handling-disposal-oil.pdf",
+    "format": "PDF",
+    "retrieval_date": "2026-10-07T13:34:14.367923Z",
+    "sha256": "04e020c1a45368e73d6c462a83dcdd1265bfa04d9df7e65b74311280954a264d"
+  },
+  "D5": {
+    "name": "Use of Non-Sugar Sweeteners: WHO Guideline",
+    "publisher": "World Health Organization",
+    "legal_status": "guidance",
+    "year": 2023,
+    "source_url": "https://iris.who.int/server/api/core/bitstreams/e567a191-33a4-44ff-8b37-788a4e432764/content",
+    "format": "PDF",
+    "retrieval_date": "2026-10-07T13:34:30.238725Z",
+    "sha256": "eac9098f235dc4b3a6079865aadf9515990d415974f864e8593b6096a6b7d0e3"
+  },
+  "D6": {
+    "name": "Five Keys to Safer Food Manual",
+    "publisher": "World Health Organization",
+    "legal_status": "guidance",
+    "year": 2006,
+    "source_url": "https://iris.who.int/server/api/core/bitstreams/dadab0b0-98e4-41a3-b432-e984d79f15a3/content",
+    "format": "PDF",
+    "retrieval_date": "2026-10-07T13:34:32.367290Z",
+    "sha256": "5c2756b9f99628c593cdc3797298969225c1e6b8a79ea3c80de62653b2c46a0e"
+  },
+  "D7": {
+    "name": "Food Safety and Standards Act, 2006",
+    "publisher": "Government of India (hosted by FSSAI)",
+    "legal_status": "legislation",
+    "year": 2006,
+    "source_url": "https://fssai.gov.in/docs/food-law/act-2006/Food_Safety_and_Standards_Act_2006.pdf",
+    "format": "PDF",
+    "retrieval_date": "2026-10-07T13:34:32.880478Z",
+    "sha256": "4af5224f4a0e8e506919ea1659d5066e6fc0bc3372859ca4eda60442f3be0e6a"
+  }
+}

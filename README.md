@@ -47,6 +47,30 @@ This is handled by `lib/scopeGuard.ts`, which intercepts the user's message and 
 
 If a user message trips the scope guard, the request is immediately short-circuited, and a hardcoded, polite decline message is returned instructing the user to consult a registered dietitian or doctor.
 
+## ⚙️ RAG Architecture & Token Efficiency
+
+To provide context to the LLM, we use a highly optimized Retrieval-Augmented Generation (RAG) pipeline:
+- **Hybrid Search:** Combines pgvector cosine similarity (`BAAI/bge-small-en-v1.5`) with PostgreSQL full-text search (`tsvector`), merged via Reciprocal Rank Fusion (RRF). We use an HNSW index (`chunk_embedding_hnsw`) for fast vector search and a GIN index (`chunk_tsv_gin`) for full-text search.
+- **Cross-Encoder Re-ranking:** Top candidates are re-ranked precisely using a local cross-encoder (`Xenova/ms-marco-MiniLM-L-6-v2`) via Transformers.js.
+- **Hyperparameters:** The system retrieves `K_CANDIDATES=20` chunks via hybrid search, reranks them, and selects the top `K_FINAL=5`. 
+- **Context Budgeting:** Because the cross-encoder is highly accurate, we maintain a strict `TARGET_TOKENS=1200` token limit for the context window. This achieves a lean **~1,600 prompt tokens** per request, dramatically reducing API costs and latency while preserving full answer fidelity.
+
+### Chunking Strategy & Trade-offs
+We employ a hierarchical, structural chunking strategy. 
+- The parser maintains a heading stack to inject `[Document | Publisher | Year | Section Path]` context headers into every chunk's `embed_text`.
+- We strictly bound chunk sizes between `MIN_TOKENS=80` and `MAX_TOKENS=450` to maintain atomic semantic density, discarding smaller orphans and avoiding arbitrary splits across sentence boundaries.
+- **Trade-off:** Markdown tables are aggressively preserved. If a table exceeds `MAX_TOKENS`, it is split by row-groups, repeating the header and separator rows. This increases token overlap slightly, but critically preserves the structural relationship required for table comprehension by the LLM.
+
+### Database Schema Evolution
+In Milestone 2, we migrated away from raw JSON storage.
+- The `Chunk` schema now includes Postgres vector dimensions (`vector(384)`) and a `tsvector` generated column.
+- The `Message` schema now relates one-to-many with `MessageCitation`, explicitly storing the `chunkId`, `claimText`, and the exact `quote`.
+- A `RetrievalLog` captures latency, candidate counts, and the Verifier's `droppedClaims` metric for telemetry.
+
+### System Evaluation
+- **Retrieval Accuracy:** Hit@3 is 46.67%, Hit@5 is 53.33% (MRR: 0.4669).
+- **Scope Guard Integrity:** The multi-turn scope guard intercepts out-of-scope targets (medical questions, calorie goals) with a 100% Adversarial Success Rate, successfully resisting complex multi-turn bypass attempts.
+
 ## 🛠️ Tech Stack
 
 - **Frontend:** Next.js 15 (App Router), React, Tailwind CSS

@@ -1,0 +1,10 @@
+exclude_pages:
+  - 1-5
+heading_promoters:
+  - regex: "(?i)^Section \\d+"
+    level: 1
+population_tags:
+  - regex: "(?i)children|youth"
+    tag: "children"
+  - regex: "(?i)adults"
+    tag: "adults"

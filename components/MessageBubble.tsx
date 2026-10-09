@@ -1,11 +1,13 @@
 import React from 'react';
 import ClaimBadge from './ClaimBadge';
-import { Claim } from '@/lib/schema';
+import DisagreementCallout from './DisagreementCallout';
+import { ClaimV2 as Claim, Disagreement } from '@/lib/schema';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   claims?: Claim[];
+  disagreements?: Disagreement[];
   timestamp?: string;
   isError?: boolean;
 }
@@ -82,18 +84,20 @@ export default function MessageBubble({ message, onSelectClaim, selectedClaim }:
           </div>
           <div className="flex flex-wrap gap-3.5 pt-1.5">
             {message.claims.map((claim, idx) => (
-              <button 
-                key={idx} 
-                onClick={() => onSelectClaim(claim)}
-                className={`takeaway-pill group px-4 py-2.5 rounded-full font-label-md text-label-md flex items-center gap-2 transition-all duration-200 border ${selectedClaim?.claim_text === claim.claim_text ? 'bg-teal-100 text-teal-900 border-teal-300 shadow-md ring-2 ring-teal-500/20' : 'bg-white text-slate-800 hover:bg-teal-50/50 shadow-sm border-slate-200/80'}`}
-                type="button"
-              >
-                <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">{idx + 1}</span>
-                <span>{claim.claim_text.slice(0, 40)}{claim.claim_text.length > 40 ? '...' : ''}</span>
-              </button>
+              <ClaimBadge 
+                key={idx}
+                claim={claim}
+                index={idx + 1}
+                isSelected={selectedClaim?.claim_text === claim.claim_text}
+                onSelect={onSelectClaim}
+              />
             ))}
           </div>
         </div>
+      )}
+
+      {message.disagreements && message.disagreements.length > 0 && (
+        <DisagreementCallout disagreements={message.disagreements} />
       )}
 
       <div className="relative z-10 mt-6 pt-4 border-t border-surface-container flex items-center justify-between text-outline">

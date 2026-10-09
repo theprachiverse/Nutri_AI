@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ['onnxruntime-node', '@huggingface/transformers'],
   async headers() {
     return [
       {

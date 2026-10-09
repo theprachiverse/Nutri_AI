@@ -14,11 +14,76 @@ model Conversation {
 }
 
 model Message {
-  id             String       @id @default(cuid())
+  id             String            @id @default(cuid())
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversation   Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   role           String
   content        String
-  rawResponse    Json?        // Native Json type supported in PostgreSQL
-  createdAt      DateTime     @default(now())
+  citations      MessageCitation[]
+  retrievalLog   RetrievalLog?
+  createdAt      DateTime          @default(now())
+}
+
+model MessageCitation {
+  id         String   @id @default(cuid())
+  messageId  String
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  chunkId    String
+  chunk      Chunk    @relation(fields: [chunkId], references: [id])
+  claimText  String
+  quote      String
+}
+
+model Document {
+  id              String   @id
+  title           String
+  shortName       String
+  publisher       String
+  publisherShort  String
+  year            Int
+  sourceUrl       String
+  format          String
+  legalStatus     String
+  retrievalDate   DateTime?
+  sha256          String?
+  chunks          Chunk[]
+}
+
+model Chunk {
+  id              String   @id
+  documentId      String
+  document        Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  sectionHeading  String
+  chunkIndex      Int
+  chunkType       String
+  text            String
+  pageStart       Int?
+  pageEnd         Int?
+  tokenCount      Int
+  population      String[]
+  excludedPop     String[]
+  contentHash     String
+  embedding       Unsupported("vector(384)")?
+  tsv             Unsupported("tsvector")?
+  citations       MessageCitation[]
+}
+
+model RetrievalLog {
+  id              String   @id @default(cuid())
+  messageId       String   @unique
+  message         Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  query           String
+  mode            String
+  candidatesCount Int
+  keptCount       Int
+  droppedClaims   Json?
+}
+
+model IndexMeta {
+  id             Int      @id @default(1)
+  embeddingModel String
+  dimensions     Int
+  chunkCount     Int
+  indexedAt      DateTime @default(now())
+  corpusVersion  Int
 }

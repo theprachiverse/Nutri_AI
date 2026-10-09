@@ -1,5 +1,6 @@
 import React from 'react';
-import { Claim } from '@/lib/schema';
+import { ClaimV2 as Claim } from '@/lib/schema';
+import SourceChunkCard from './SourceChunkCard';
 
 export default function SourcesPanel({ selectedClaim, onClose }: { selectedClaim: Claim | null, onClose: () => void }) {
   return (
@@ -35,43 +36,13 @@ export default function SourcesPanel({ selectedClaim, onClose }: { selectedClaim
               </div>
             </div>
 
-            {/* Status Card */}
-            <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm space-y-3">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed/40 text-tertiary font-label-sm text-label-sm font-semibold">
-                <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
-                <span>Sources coming soon</span>
+            {/* Render the true citation */}
+            {selectedClaim.citation && (
+              <div className="space-y-2 pt-2">
+                 <span className="font-label-sm text-label-sm text-primary tracking-widest uppercase font-bold">VERIFIED EVIDENCE</span>
+                 <SourceChunkCard claim={selectedClaim} />
               </div>
-              <h3 className="font-headline-sm text-headline-sm text-on-surface font-semibold text-base">
-                We're still adding sources for this
-              </h3>
-              <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                Real citations, clinical trial links, and nutritional breakdown will be added in the next update. We're building a system to verify every takeaway with friendly, transparent sources.
-              </p>
-              {/* Mock Citation Sneak Peek */}
-              <div className="mt-2 p-3 rounded-xl bg-surface-container-low/70 space-y-1.5">
-                <div className="flex items-center justify-between text-outline">
-                  <span className="font-caption text-caption font-semibold uppercase tracking-wider text-primary">Target Registry</span>
-                  <span className="font-caption text-caption">PubMed Central</span>
-                </div>
-                <p className="font-caption text-caption text-on-surface font-medium">
-                  “Effect of tart cherry juice on melatonin levels and sleep metrics: randomized trial”
-                </p>
-              </div>
-            </div>
-
-            {/* What's Next Tracker */}
-            <div className="p-5 rounded-2xl bg-surface-container-low/60 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider">Verification Pipeline</span>
-                <span className="font-caption text-caption text-outline">Step 1 of 2</span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-surface-container overflow-hidden">
-                <div className="h-full bg-[#0d9488] rounded-full transition-all duration-500" style={{ width: '50%' }}></div>
-              </div>
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                <strong className="text-on-surface font-medium">Next step:</strong> Linking peer-reviewed journals, DOI resolvers, and certified dietary guideline authorities.
-              </p>
-            </div>
+            )}
           </>
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-center text-emerald-700/60 mt-16">

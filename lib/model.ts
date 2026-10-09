@@ -1,7 +1,8 @@
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { NutritionResponseSchema, NutritionResponse } from './schema';
+import { ModelOutputSchema } from './schema';
 import { SYSTEM_PROMPT } from './systemPrompt';
+import { z } from 'zod';
 
 
 
@@ -10,7 +11,7 @@ interface ModelMessage {
   content: string;
 }
 
-export async function callModel(messages: ModelMessage[]): Promise<NutritionResponse> {
+export async function callModel(messages: ModelMessage[]): Promise<z.infer<typeof ModelOutputSchema>> {
   const openai = new OpenAI({ 
     apiKey: process.env.GROQ_API_KEY, 
     baseURL: 'https://api.groq.com/openai/v1',
@@ -26,14 +27,19 @@ export async function callModel(messages: ModelMessage[]): Promise<NutritionResp
         ...messages,
       ],
       max_tokens: 2000,
-      response_format: zodResponseFormat(NutritionResponseSchema, 'nutrition_response'),
+      temperature: 0,
+      response_format: zodResponseFormat(ModelOutputSchema, 'nutrition_response'),
     });
 
     const parsed = completion.choices[0].message.parsed;
     if (!parsed) throw new Error('Model returned no parsed output');
 
+    if (completion.usage) {
+      console.log(`Token usage - Prompt: ${completion.usage.prompt_tokens}, Completion: ${completion.usage.completion_tokens}, Total: ${completion.usage.total_tokens}`);
+    }
+
     // Hard validation — fail if schema contract is broken
-    return NutritionResponseSchema.parse(parsed);
+    return ModelOutputSchema.parse(parsed);
   } catch (error: any) {
     if (error.status === 429) {
       throw new Error('RATE_LIMIT_EXCEEDED');

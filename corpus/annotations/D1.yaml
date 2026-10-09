@@ -1,0 +1,13 @@
+exclude_pages:
+  - 1-17
+  - 130-148
+heading_promoters:
+  - regex: "(?i)^Guideline \\d+"
+    level: 1
+population_tags:
+  - regex: "(?i)infant|baby|toddler"
+    tag: "infants"
+  - regex: "(?i)pregnant|pregnancy"
+    tag: "pregnant_women"
+  - regex: "(?i)elderly|older adults"
+    tag: "older_adults"

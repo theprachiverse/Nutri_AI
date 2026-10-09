@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import MessageList from './MessageList';
 import InputBox from './InputBox';
 import SourcesPanel from './SourcesPanel';
-import { Claim } from '@/lib/schema';
+import { ClaimV2 as Claim } from '@/lib/schema';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   claims?: Claim[];
+  disagreements?: any[];
+  status?: 'answered' | 'not_covered' | 'out_of_scope';
   timestamp?: string;
   isError?: boolean;
 }
@@ -58,6 +60,8 @@ export default function ChatWindow() {
           role: 'assistant', 
           content: data.answer_text || data.error || 'No answer provided.', 
           claims: data.claims || [],
+          disagreements: data.disagreements || [],
+          status: data.status || 'answered',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);

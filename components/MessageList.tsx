@@ -1,11 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
-import { Claim } from '@/lib/schema';
+import { ClaimV2 as Claim } from '@/lib/schema';
+
+import RefusalCard from './RefusalCard';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   claims?: Claim[];
+  disagreements?: any[];
+  status?: 'answered' | 'not_covered' | 'out_of_scope';
   timestamp?: string;
 }
 
@@ -50,9 +54,12 @@ export default function MessageList({ messages, isLoading, onSelectClaim, select
         </div>
       ) : (
         <div className="pt-2">
-          {messages.map((msg, idx) => (
-            <MessageBubble key={idx} message={msg} onSelectClaim={onSelectClaim} selectedClaim={selectedClaim} />
-          ))}
+          {messages.map((msg, idx) => {
+            if (msg.role === 'assistant' && msg.status && msg.status !== 'answered') {
+              return <RefusalCard key={idx} status={msg.status} message={msg.content} />;
+            }
+            return <MessageBubble key={idx} message={msg} onSelectClaim={onSelectClaim} selectedClaim={selectedClaim} />;
+          })}
         </div>
       )}
       
