@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="font-body-md text-body-md text-on-surface min-h-screen antialiased selection:bg-primary-fixed selection:text-on-primary-fixed h-full"
         style={{
           backgroundColor: '#f8fafc',
-          backgroundImage: "url('https://lh3.googleusercontent.com/aida/AEtjO1WR0L-2gwALQVGwBfhVHKUYSjEzIy86FRCbYrI_XW2m6tucDPLr2WCrdCzo0xZtfaGjvd5ldNFUZY9OCp1UNwFXHPxvdamS6HsM_mIbSQq8wqgILg6325d9EmdOTo-FPFkQcJTZBXRK3wjn3fqt-pWDd__rrWe8huP9YpeWYVVVvWIOXERUDdRxD-kI4QpOQXR0wmAzpHs9LIy_VysZ5fgiLDTKSRjzcK9V4cPeZadx1yOVEAhshWCJoVs')",
+          backgroundImage: "url('/nutrition_chat_bg.jpg')",
           backgroundRepeat: 'repeat',
           backgroundSize: '480px 450px',
           backgroundAttachment: 'fixed',

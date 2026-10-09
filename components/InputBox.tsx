@@ -66,10 +66,10 @@ export default function InputBox({ onSend, disabled }: { onSend: (text: string) 
           <span className="font-label-sm text-label-sm font-semibold">Try asking:</span>
         </div>
         {[
-          "Does tart cherry juice help you sleep?",
-          "What are the health benefits of fasting?",
-          "How do Omega-3s help my heart & brain?",
-          "Which type of magnesium is best for sleep?"
+          "What are the WHO guidelines on non-sugar sweeteners?",
+          "What are the five keys to safer food?",
+          "How should used cooking oil be handled safely?",
+          "What are the Dietary Guidelines for Indians?"
         ].map((query, i) => (
           <button 
             key={i}

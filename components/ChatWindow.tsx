@@ -83,9 +83,8 @@ export default function ChatWindow() {
           <div className="flex items-center gap-space-md">
             <div className="flex items-center gap-space-sm cursor-pointer" onClick={() => { setMessages([]); setConversationId(null); setSelectedClaim(null); }}>
               <svg className="h-8 w-auto text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 20h10" />
-                <path d="M10 20c5.5-1.5 7-6 7-10 0-4-3-6-3-6s-2 2-2 6c0 4-1.5 8.5-7 10" />
-                <path d="M10 20c-5.5-1.5-7-6-7-10 0-4 3-6 3-6s2 2 2 6c0 4 1.5 8.5 7 10" />
+                <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+                <path d="M12 4v-2c2 0 4 2 4 4" />
               </svg>
               <span className="font-headline-md text-headline-md text-primary tracking-tight">NutriAI</span>
             </div>
