@@ -22,6 +22,8 @@ export default function ChatWindow() {
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
 
+  const [loadingStatus, setLoadingStatus] = useState<string | null>(null);
+
   const handleSelectClaim = (claim: Claim) => {
     setSelectedClaim(claim);
     setIsSourcesOpen(true);
@@ -29,10 +31,10 @@ export default function ChatWindow() {
 
   const handleSend = async (text: string) => {
     const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    // Add user message to UI
     const newMessages: Message[] = [...messages, { role: 'user', content: text, timestamp: currentTime }];
     setMessages(newMessages);
     setIsLoading(true);
+    setLoadingStatus('Initializing pipeline...');
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/chat`, {
@@ -49,23 +51,48 @@ export default function ChatWindow() {
         throw new Error(errData.error || `API error: ${res.status}`);
       }
 
-      const data = await res.json();
-      
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
-      }
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
 
-      setMessages([
-        ...newMessages, 
-        { 
-          role: 'assistant', 
-          content: data.answer_text || data.error || 'No answer provided.', 
-          claims: data.claims || [],
-          disagreements: data.disagreements || [],
-          status: data.status || 'answered',
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n\n');
+          buffer = lines.pop() || '';
+          
+          for (const chunk of lines) {
+            const typeMatch = chunk.match(/event: (.*)\n/);
+            const dataMatch = chunk.match(/data: (.*)/);
+            if (typeMatch && dataMatch) {
+              const type = typeMatch[1];
+              const data = JSON.parse(dataMatch[1]);
+              
+              if (type === 'status') {
+                setLoadingStatus(data.message);
+              } else if (type === 'result') {
+                if (data.conversationId) setConversationId(data.conversationId);
+                setMessages([
+                  ...newMessages, 
+                  { 
+                    role: 'assistant', 
+                    content: data.answer_text || data.error || 'No answer provided.', 
+                    claims: data.claims || [],
+                    disagreements: data.disagreements || [],
+                    status: data.status || 'answered',
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  }
+                ]);
+              } else if (type === 'error') {
+                throw new Error(data.message);
+              }
+            }
+          }
         }
-      ]);
+      }
     } catch (error: any) {
       setMessages([
         ...newMessages,
@@ -73,6 +100,7 @@ export default function ChatWindow() {
       ]);
     } finally {
       setIsLoading(false);
+      setLoadingStatus(null);
     }
   };
 
@@ -124,6 +152,7 @@ export default function ChatWindow() {
               <MessageList 
                 messages={messages} 
                 isLoading={isLoading} 
+                loadingStatus={loadingStatus}
                 onSelectClaim={handleSelectClaim} 
                 selectedClaim={selectedClaim}
               />

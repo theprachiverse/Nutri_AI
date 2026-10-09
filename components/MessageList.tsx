@@ -13,7 +13,7 @@ interface Message {
   timestamp?: string;
 }
 
-export default function MessageList({ messages, isLoading, onSelectClaim, selectedClaim }: { messages: Message[], isLoading: boolean, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
+export default function MessageList({ messages, isLoading, loadingStatus, onSelectClaim, selectedClaim }: { messages: Message[], isLoading: boolean, loadingStatus?: string | null, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -70,7 +70,9 @@ export default function MessageList({ messages, isLoading, onSelectClaim, select
             <span className="w-2.5 h-2.5 rounded-full bg-[#14b8a6] animate-bounce" style={{ animationDelay: '0.18s' }}></span>
             <span className="w-2.5 h-2.5 rounded-full bg-[#5eead4] animate-bounce" style={{ animationDelay: '0.36s' }}></span>
           </div>
-          <span className="font-label-md text-label-md text-[#0f766e] font-semibold tracking-wide">Thinking &amp; synthesizing clinical insights...</span>
+          <span className="font-label-md text-label-md text-[#0f766e] font-semibold tracking-wide transition-all duration-300">
+             {loadingStatus || 'Thinking & synthesizing clinical insights...'}
+          </span>
         </div>
       )}
       <div ref={bottomRef} />
