@@ -15,9 +15,9 @@ export const ModelOutputSchema = z.object({
       statement: z.string()
     }))
   })).nullable(),
-  suggested_follow_ups: z.array(z.string().describe("A short, relevant follow-up question the user could ask")).max(3).optional().nullable(),
-  primary_topic: z.string().describe("1-2 word main topic of this answer").optional().nullable(),
-  related_topics: z.array(z.string().describe("1-2 word related topic")).max(4).optional().nullable()
+  suggested_follow_ups: z.array(z.string().describe("A short, relevant follow-up question the user could ask")).max(3).nullable(),
+  primary_topic: z.string().describe("1-2 word main topic of this answer").nullable(),
+  related_topics: z.array(z.string().describe("1-2 word related topic")).max(4).nullable()
 });
 
 export type Citation = {
