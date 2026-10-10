@@ -31,7 +31,7 @@ export default function KnowledgeMap({ messages, onClose, onTopicClick }: Knowle
 
   return (
     <aside 
-      className="fixed inset-y-0 left-0 z-40 w-80 sm:w-88 lg:w-80 xl:w-88 bg-white flex flex-col justify-between shadow-xl lg:shadow-none border-r border-slate-200 lg:static lg:h-[calc(100vh-5rem)] overflow-y-auto animate-slide-in-left pt-20 lg:pt-0 shrink-0"
+      className="fixed inset-y-0 left-0 z-40 w-80 sm:w-88 lg:w-80 xl:w-88 bg-white flex flex-col justify-between shadow-xl lg:shadow-none border-r border-slate-200 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] overflow-y-auto animate-slide-in-left pt-20 lg:pt-0 shrink-0"
       id="knowledge-map-sidebar"
     >
       <div className="p-5 sm:p-6 flex-1 flex flex-col">

@@ -124,15 +124,28 @@ export default function MessageBubble({ message, onSelectClaim, selectedClaim, o
       )}
 
       {message.suggested_follow_ups && message.suggested_follow_ups.length > 0 && (
-        <div className="relative z-10 mt-6 pt-2">
-          <div className="flex flex-wrap gap-2.5">
+        <div className="relative z-10 mt-6 pt-3 border-t border-slate-100/80 space-y-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <h3 className="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-[18px]">forum</span>
+              <span>Suggested Follow-ups</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-primary-container/20 text-primary font-label-sm">Click to ask</span>
+            </h3>
+            <span className="font-caption text-caption text-outline">
+              Click any question below to explore deeper insights on this topic:
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2.5 pt-0.5">
             {message.suggested_follow_ups.map((question, idx) => (
               <button
                 key={idx}
                 onClick={() => onSend && onSend(question)}
-                className="text-left px-4 py-2 rounded-full border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 text-sm font-medium transition-colors shadow-sm"
+                className="text-left px-4 py-2 rounded-full border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 text-sm font-medium transition-all shadow-2xs flex items-center gap-2 group cursor-pointer hover:border-teal-300"
               >
-                {question}
+                <span>{question}</span>
+                <span className="material-symbols-outlined text-[14px] text-teal-600 group-hover:translate-x-0.5 transition-transform">
+                  arrow_forward
+                </span>
               </button>
             ))}
           </div>
