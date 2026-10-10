@@ -83,6 +83,9 @@ export async function hydrateResponse(
     status: 'answered',
     answer_text: verifiedResponse.answer_text,
     claims: hydratedClaims,
-    disagreements: hydratedDisagreements.length > 0 ? hydratedDisagreements : undefined
+    disagreements: hydratedDisagreements.length > 0 ? hydratedDisagreements : undefined,
+    suggested_follow_ups: verifiedResponse.suggested_follow_ups || undefined,
+    primary_topic: verifiedResponse.primary_topic || undefined,
+    related_topics: verifiedResponse.related_topics || undefined
   };
 }
