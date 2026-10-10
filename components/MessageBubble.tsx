@@ -3,6 +3,26 @@ import ClaimBadge from './ClaimBadge';
 import DisagreementCallout from './DisagreementCallout';
 import { ClaimV2 as Claim, Disagreement } from '@/lib/schema';
 
+const TypewriterText = ({ text }: { text: string }) => {
+  const [displayed, setDisplayed] = React.useState('');
+
+  React.useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      index += 4; // characters per tick
+      if (index >= text.length) {
+        setDisplayed(text);
+        clearInterval(interval);
+      } else {
+        setDisplayed(text.slice(0, index));
+      }
+    }, 15);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <>{displayed}</>;
+};
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
@@ -70,7 +90,9 @@ export default function MessageBubble({ message, onSelectClaim, selectedClaim }:
             <span className="font-semibold text-sm uppercase tracking-wider">Error</span>
           </div>
         )}
-        <p className={`font-body-md text-body-md mt-2 leading-loose whitespace-pre-wrap ${message.isError ? 'text-red-800' : 'text-slate-800'}`}>{message.content}</p>
+        <p className={`font-body-md text-body-md mt-2 leading-loose whitespace-pre-wrap ${message.isError ? 'text-red-800' : 'text-slate-800'}`}>
+          {message.isError ? message.content : <TypewriterText text={message.content} />}
+        </p>
       </div>
 
       {message.claims && message.claims.length > 0 && (

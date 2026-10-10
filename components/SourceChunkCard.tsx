@@ -27,12 +27,42 @@ export default function SourceChunkCard({ claim }: { claim: Claim }) {
     if (!chunkText) return <div className="h-20 animate-pulse bg-slate-100 rounded-md"></div>;
     if (!citation.quote) return chunkText;
 
-    const idx = chunkText.toLowerCase().indexOf(citation.quote.toLowerCase());
-    if (idx === -1) return chunkText;
+    // Create a flexible regex that allows any amount of whitespace (including newlines) 
+    // between words, as the extracted quote might differ in whitespace from the raw chunk.
+    const escapeRegExp = (string: string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regexPattern = escapeRegExp(citation.quote).replace(/\s+/g, '\\s+');
+    
+    let matchObj;
+    try {
+      const regex = new RegExp(regexPattern, 'i');
+      matchObj = chunkText.match(regex);
+    } catch (e) {
+      // Fallback in case of weird regex errors
+    }
+
+    if (!matchObj || matchObj.index === undefined) {
+      // Try falling back to simple indexOf if regex fails to match for some other reason
+      const fallbackIdx = chunkText.toLowerCase().indexOf(citation.quote.toLowerCase());
+      if (fallbackIdx === -1) return chunkText;
+      
+      const beforeFallback = chunkText.substring(0, fallbackIdx);
+      const matchFallback = chunkText.substring(fallbackIdx, fallbackIdx + citation.quote.length);
+      const afterFallback = chunkText.substring(fallbackIdx + citation.quote.length);
+      return (
+        <>
+          {beforeFallback}
+          <mark className="bg-amber-200 text-amber-900 rounded-sm px-1 py-0.5" style={{ WebkitBoxDecorationBreak: 'clone', boxDecorationBreak: 'clone' }}>{matchFallback}</mark>
+          {afterFallback}
+        </>
+      );
+    }
+
+    const idx = matchObj.index;
+    const matchLength = matchObj[0].length;
 
     const before = chunkText.substring(0, idx);
-    const match = chunkText.substring(idx, idx + citation.quote.length);
-    const after = chunkText.substring(idx + citation.quote.length);
+    const match = chunkText.substring(idx, idx + matchLength);
+    const after = chunkText.substring(idx + matchLength);
 
     return (
       <>
