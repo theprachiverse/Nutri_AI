@@ -8,9 +8,10 @@ export function checkConversationContext(messages: Message[], currentNormalizedQ
   const personalWords = /\b(me|my|mine|i)\b/i;
   
   if (personalWords.test(currentNormalizedQuery)) {
-    // Check if the previous assistant message was a refusal or if there is a pattern of personal queries
-    if (messages.length > 0) {
-      return { blocked: true, reason: 'Hidden context attack detected (personalization in follow-up)' };
+    // Check if the previous assistant message was a refusal
+    const previousAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant');
+    if (previousAssistantMessage && previousAssistantMessage.content.includes('outside what I can help with')) {
+      return { blocked: true, reason: 'Hidden context attack detected (personalization in follow-up to refusal)' };
     }
   }
   
