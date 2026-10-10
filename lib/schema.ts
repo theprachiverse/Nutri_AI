@@ -12,6 +12,7 @@ export const ModelOutputSchema = z.object({
     topic: z.string(),
     positions: z.array(z.object({
       chunk_id: z.string(),
+      statement: z.string()
     }))
   })).nullable(),
   suggested_follow_ups: z.array(z.string().describe("A short, relevant follow-up question the user could ask")).max(3).optional().nullable(),

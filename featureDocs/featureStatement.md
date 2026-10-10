@@ -208,6 +208,7 @@ Some questions are covered by **more than one document**. For example, on **cook
 
 - **Don't rebuild** the frontend or backend.
 - The **sources panel** that was left empty in Milestone 1 now **shows the chunks behind each answer**.
+- **Interactive UX Features**: The chat interface now features dynamically generated contextual follow-up chips and a "Session Knowledge Map" panel that tracks topics explored during the session.
 - The `source` field on every claim now holds a **real citation instead of `null`**.
 - If the current schema doesn't fit real citations, **change it and record what you changed** (README).
 

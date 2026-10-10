@@ -13,6 +13,7 @@ Nutri AI is an intelligent, conversational assistant designed to answer your que
 1. **Strictly Evidence-Based:** Every single claim Nutri AI makes is verified against its internal database. You can click on any "Takeaway" to see the exact quote and source document it pulled the information from!
 2. **Safety First (Scope Guarding):** Before the AI even generates an answer, it checks if your question is asking for medical advice or weight loss targets. If it is, it stops immediately to keep you safe.
 3. **No Hallucinations:** A specialized "Verifier" double-checks the AI's math and quotes before showing you the answer. If the AI made something up, the system drops the fake claim.
+4. **Interactive Knowledge Map & Follow-ups:** The app dynamically builds a visual map of topics you've explored in your session and suggests contextual follow-up questions to keep your research flowing.
 
 ---
 
