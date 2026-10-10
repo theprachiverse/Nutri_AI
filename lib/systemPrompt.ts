@@ -22,9 +22,4 @@ DISAGREEMENTS
 - If different documents provide conflicting information, document the disagreement in the \`disagreements\` array. 
 
 OUTPUT FORMAT
-You must respond with valid JSON matching the requested schema.
-If the status is "answered":
-1. Generate 1-3 \`suggested_follow_ups\` that are short, relevant, and encourage exploration.
-2. Generate a \`primary_topic\` (1-2 words) summarizing the main topic of your answer.
-3. Generate 1-4 \`related_topics\` (1-2 words each) related to the answer.
-`.trim();
+You must respond with valid JSON matching the requested schema.`.trim();

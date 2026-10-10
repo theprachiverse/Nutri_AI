@@ -14,7 +14,25 @@ interface Message {
   timestamp?: string;
 }
 
-export default function MessageList({ messages, isLoading, loadingStatus, onSelectClaim, selectedClaim, onSend }: { messages: Message[], isLoading: boolean, loadingStatus?: string | null, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null, onSend: (text: string) => void }) {
+export default function MessageList({ 
+  messages, 
+  isLoading, 
+  loadingStatus, 
+  onSelectClaim, 
+  selectedClaim, 
+  onSend,
+  onSaveClaims,
+  savedClaimTexts
+}: { 
+  messages: Message[], 
+  isLoading: boolean, 
+  loadingStatus?: string | null, 
+  onSelectClaim: (claim: Claim) => void, 
+  selectedClaim: Claim | null, 
+  onSend: (text: string) => void,
+  onSaveClaims?: (claims: Claim[]) => void,
+  savedClaimTexts?: Set<string>
+}) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,7 +77,22 @@ export default function MessageList({ messages, isLoading, loadingStatus, onSele
             if (msg.role === 'assistant' && msg.status && msg.status !== 'answered') {
               return <RefusalCard key={idx} status={msg.status} message={msg.content} />;
             }
-            return <MessageBubble key={idx} message={msg} onSelectClaim={onSelectClaim} selectedClaim={selectedClaim} onSend={onSend} />;
+            const isAllSaved = Boolean(
+              msg.claims && 
+              msg.claims.length > 0 && 
+              savedClaimTexts && 
+              msg.claims.every(c => savedClaimTexts.has(c.claim_text))
+            );
+            return (
+              <MessageBubble 
+                key={idx} 
+                message={msg} 
+                onSelectClaim={onSelectClaim} 
+                selectedClaim={selectedClaim} 
+                onSaveClaims={onSaveClaims}
+                isAllSaved={isAllSaved}
+              />
+            );
           })}
         </div>
       )}

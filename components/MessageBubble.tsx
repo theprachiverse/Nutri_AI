@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import ClaimBadge from './ClaimBadge';
 import DisagreementCallout from './DisagreementCallout';
 import { ClaimV2 as Claim, Disagreement } from '@/lib/schema';
@@ -28,13 +29,33 @@ interface Message {
   content: string;
   claims?: Claim[];
   disagreements?: Disagreement[];
-  suggested_follow_ups?: string[];
   timestamp?: string;
   isError?: boolean;
 }
 
-export default function MessageBubble({ message, onSelectClaim, selectedClaim, onSend }: { message: Message, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null, onSend?: (text: string) => void }) {
+interface MessageBubbleProps {
+  message: Message;
+  onSelectClaim: (claim: Claim) => void;
+  selectedClaim: Claim | null;
+  onSaveClaims?: (claims: Claim[]) => void;
+  isAllSaved?: boolean;
+}
+
+export default function MessageBubble({ 
+  message, 
+  onSelectClaim, 
+  selectedClaim,
+  onSaveClaims,
+  isAllSaved
+}: MessageBubbleProps) {
   const isUser = message.role === 'user';
+  const [copiedAnswer, setCopiedAnswer] = useState(false);
+
+  const handleCopyAnswer = () => {
+    navigator.clipboard.writeText(message.content);
+    setCopiedAnswer(true);
+    setTimeout(() => setCopiedAnswer(false), 2000);
+  };
   
   if (isUser) {
     return (
@@ -123,40 +144,38 @@ export default function MessageBubble({ message, onSelectClaim, selectedClaim, o
         <DisagreementCallout disagreements={message.disagreements} />
       )}
 
-      {message.suggested_follow_ups && message.suggested_follow_ups.length > 0 && (
-        <div className="relative z-10 mt-6 pt-3 border-t border-slate-100/80 space-y-2.5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-            <h3 className="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-[18px]">forum</span>
-              <span>Suggested Follow-ups</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-primary-container/20 text-primary font-label-sm">Click to ask</span>
-            </h3>
-            <span className="font-caption text-caption text-outline">
-              Click any question below to explore deeper insights on this topic:
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2.5 pt-0.5">
-            {message.suggested_follow_ups.map((question, idx) => (
-              <button
-                key={idx}
-                onClick={() => onSend && onSend(question)}
-                className="text-left px-4 py-2 rounded-full border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 text-sm font-medium transition-all shadow-2xs flex items-center gap-2 group cursor-pointer hover:border-teal-300"
+      {/* Bottom Action Bar: Save to Insights & Copy */}
+      <div className="relative z-10 mt-6 pt-4 border-t border-surface-container flex flex-wrap items-center justify-between gap-3 text-outline">
+        <div className="flex items-center gap-2.5">
+          {message.claims && message.claims.length > 0 && onSaveClaims && (
+            <button
+              onClick={() => onSaveClaims(message.claims!)}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border cursor-pointer ${
+                isAllSaved 
+                  ? 'bg-teal-50 text-teal-800 border-teal-300 shadow-2xs' 
+                  : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+              }`}
+              type="button"
+            >
+              <span 
+                className={`material-symbols-outlined text-[17px] ${isAllSaved ? 'text-teal-700' : 'text-slate-500'}`}
+                style={isAllSaved ? { fontVariationSettings: "'FILL' 1" } : {}}
               >
-                <span>{question}</span>
-                <span className="material-symbols-outlined text-[14px] text-teal-600 group-hover:translate-x-0.5 transition-transform">
-                  arrow_forward
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+                {isAllSaved ? 'bookmark' : 'bookmark_border'}
+              </span>
+              <span>{isAllSaved ? 'Saved to Notes' : 'Save Takeaways to Notes'}</span>
+            </button>
+          )}
 
-      <div className="relative z-10 mt-6 pt-4 border-t border-surface-container flex items-center justify-between text-outline">
-        <div className="flex items-center gap-3">
-          <button aria-label="Helpful response" className="flex items-center gap-1.5 font-label-sm text-label-sm hover:text-primary transition-colors" type="button">
-            <span className="material-symbols-outlined text-[18px]">thumb_up</span>
-            <span>Helpful</span>
+          <button
+            onClick={handleCopyAnswer}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 transition-colors cursor-pointer"
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[15px]">
+              {copiedAnswer ? 'check' : 'content_copy'}
+            </span>
+            <span>{copiedAnswer ? 'Copied' : 'Copy Answer'}</span>
           </button>
         </div>
       </div>

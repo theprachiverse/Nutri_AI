@@ -1,9 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import MessageList from './MessageList';
 import InputBox from './InputBox';
 import SourcesPanel from './SourcesPanel';
-import KnowledgeMap from './KnowledgeMap';
+import SavedInsights, { SavedInsight } from './SavedInsights';
 import { ClaimV2 as Claim } from '@/lib/schema';
 
 interface Message {
@@ -11,9 +11,6 @@ interface Message {
   content: string;
   claims?: Claim[];
   disagreements?: any[];
-  suggested_follow_ups?: string[];
-  primary_topic?: string | null;
-  related_topics?: string[] | null;
   status?: 'answered' | 'not_covered' | 'out_of_scope';
   timestamp?: string;
   isError?: boolean;
@@ -24,10 +21,78 @@ export default function ChatWindow() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null);
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
-  const [isKnowledgeMapOpen, setIsKnowledgeMapOpen] = useState(true);
+  const [isSavedInsightsOpen, setIsSavedInsightsOpen] = useState(true);
   const [conversationId, setConversationId] = useState<string | null>(null);
-
   const [loadingStatus, setLoadingStatus] = useState<string | null>(null);
+
+  // Saved Insights state with localStorage persistence
+  const [savedInsights, setSavedInsights] = useState<SavedInsight[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('nutriai_saved_insights');
+      if (saved) {
+        setSavedInsights(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('Failed to load saved insights from localStorage:', e);
+    }
+  }, []);
+
+  const saveToStorage = (items: SavedInsight[]) => {
+    try {
+      localStorage.setItem('nutriai_saved_insights', JSON.stringify(items));
+    } catch (e) {
+      console.error('Failed to save insights to localStorage:', e);
+    }
+  };
+
+  const savedClaimTexts = useMemo(() => {
+    return new Set(savedInsights.map(s => s.claim_text));
+  }, [savedInsights]);
+
+  const handleSaveClaims = (claims: Claim[]) => {
+    if (!claims || claims.length === 0) return;
+
+    setSavedInsights(prev => {
+      const allSaved = claims.every(c => prev.some(s => s.claim_text === c.claim_text));
+      let updated: SavedInsight[];
+
+      if (allSaved) {
+        // Toggle off / remove these claims
+        const removeTexts = new Set(claims.map(c => c.claim_text));
+        updated = prev.filter(s => !removeTexts.has(s.claim_text));
+      } else {
+        // Add claims that aren't already saved
+        const existingTexts = new Set(prev.map(s => s.claim_text));
+        const toAdd: SavedInsight[] = claims
+          .filter(c => !existingTexts.has(c.claim_text))
+          .map((c, i) => ({
+            id: `insight_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 7)}`,
+            claim_text: c.claim_text,
+            citation: c.citation,
+            savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }));
+        updated = [...prev, ...toAdd];
+      }
+
+      saveToStorage(updated);
+      return updated;
+    });
+  };
+
+  const handleRemoveInsight = (id: string) => {
+    setSavedInsights(prev => {
+      const updated = prev.filter(s => s.id !== id);
+      saveToStorage(updated);
+      return updated;
+    });
+  };
+
+  const handleClearAllSaved = () => {
+    setSavedInsights([]);
+    saveToStorage([]);
+  };
 
   const handleSelectClaim = (claim: Claim) => {
     setSelectedClaim(claim);
@@ -87,9 +152,6 @@ export default function ChatWindow() {
                     content: data.answer_text || data.error || 'No answer provided.', 
                     claims: data.claims || [],
                     disagreements: data.disagreements || [],
-                    suggested_follow_ups: data.suggested_follow_ups || [],
-                    primary_topic: data.primary_topic,
-                    related_topics: data.related_topics || [],
                     status: data.status || 'answered',
                     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                   }
@@ -130,19 +192,24 @@ export default function ChatWindow() {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Knowledge Map Toggle */}
+            {/* Saved Insights Toggle */}
             <button 
-              onClick={() => setIsKnowledgeMapOpen(!isKnowledgeMapOpen)}
-              className={`h-9 px-3 rounded-full transition-all flex items-center gap-1.5 text-xs sm:text-sm font-semibold border ${
-                isKnowledgeMapOpen 
+              onClick={() => setIsSavedInsightsOpen(!isSavedInsightsOpen)}
+              className={`h-9 px-3 rounded-full transition-all flex items-center gap-1.5 text-xs sm:text-sm font-semibold border cursor-pointer ${
+                isSavedInsightsOpen 
                   ? 'bg-teal-50 text-teal-800 border-teal-300 shadow-2xs' 
                   : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
               }`}
-              aria-label="Toggle Knowledge Map"
-              title="Toggle Knowledge Map"
+              aria-label="Toggle Saved Insights"
+              title="Toggle Saved Insights"
             >
-              <span className="material-symbols-outlined text-[18px] text-teal-700">account_tree</span>
-              <span className="hidden md:inline">Knowledge Map</span>
+              <span className="material-symbols-outlined text-[18px] text-teal-700">bookmarks</span>
+              <span className="hidden md:inline">Saved Insights</span>
+              {savedInsights.length > 0 && (
+                <span className="px-1.5 py-0.2 bg-teal-600 text-white text-[10px] font-bold rounded-full">
+                  {savedInsights.length}
+                </span>
+              )}
             </button>
 
             {/* Sources Toggle */}
@@ -151,7 +218,7 @@ export default function ChatWindow() {
                 setIsSourcesOpen(!isSourcesOpen);
                 if (isSourcesOpen) setSelectedClaim(null);
               }}
-              className={`h-9 px-3 rounded-full transition-all flex items-center gap-1.5 text-xs sm:text-sm font-semibold border ${
+              className={`h-9 px-3 rounded-full transition-all flex items-center gap-1.5 text-xs sm:text-sm font-semibold border cursor-pointer ${
                 isSourcesOpen 
                   ? 'bg-teal-50 text-teal-800 border-teal-300 shadow-2xs' 
                   : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
@@ -181,20 +248,22 @@ export default function ChatWindow() {
 
       <main className="w-full pt-20">
         <div className="flex flex-row w-full max-w-[1800px] mx-auto min-h-[calc(100vh-5rem)] relative">
-          {/* Mobile backdrop for Knowledge Map */}
-          {isKnowledgeMapOpen && (
+          {/* Mobile backdrop for Saved Insights */}
+          {isSavedInsightsOpen && (
             <div 
               className="fixed inset-0 bg-black/30 backdrop-blur-xs z-30 lg:hidden"
-              onClick={() => setIsKnowledgeMapOpen(false)}
+              onClick={() => setIsSavedInsightsOpen(false)}
             />
           )}
 
-          {/* LEFT SIDE: Session Knowledge Map */}
-          {isKnowledgeMapOpen && (
-            <KnowledgeMap 
-              messages={messages} 
-              onClose={() => setIsKnowledgeMapOpen(false)}
-              onTopicClick={(topic) => handleSend(topic)}
+          {/* LEFT SIDE: Saved Insights Panel */}
+          {isSavedInsightsOpen && (
+            <SavedInsights 
+              savedInsights={savedInsights}
+              onRemoveInsight={handleRemoveInsight}
+              onClearAll={handleClearAllSaved}
+              onSelectClaim={handleSelectClaim}
+              onClose={() => setIsSavedInsightsOpen(false)}
             />
           )}
 
@@ -207,6 +276,8 @@ export default function ChatWindow() {
               onSelectClaim={handleSelectClaim} 
               selectedClaim={selectedClaim}
               onSend={handleSend}
+              onSaveClaims={handleSaveClaims}
+              savedClaimTexts={savedClaimTexts}
             />
             <InputBox onSend={handleSend} disabled={isLoading} />
           </div>

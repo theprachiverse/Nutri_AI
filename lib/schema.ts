@@ -14,10 +14,7 @@ export const ModelOutputSchema = z.object({
       chunk_id: z.string(),
       statement: z.string()
     }))
-  })).nullable(),
-  suggested_follow_ups: z.array(z.string().describe("A short, relevant follow-up question the user could ask")).max(3).nullable(),
-  primary_topic: z.string().describe("1-2 word main topic of this answer").nullable(),
-  related_topics: z.array(z.string().describe("1-2 word related topic")).max(4).nullable()
+  })).nullable()
 });
 
 export type Citation = {
