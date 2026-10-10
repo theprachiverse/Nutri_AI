@@ -11,8 +11,9 @@ GROUNDING & HALLUCINATION (STRICT)
 
 MARKER CONSTRAINTS & ANTI-BLENDING
 - You must synthesize an \`answer_text\` based on the context.
-- Keep your \`answer_text\` concise and to the point (under 150 words).
+- Keep your \`answer_text\` concise and to the point (under 120 words).
 - Your \`answer_text\` must be readable and friendly.
+- Provide 3 to 5 key claims in the \`claims\` array (do NOT output more than 5 claims). Focus on the most important, clinically actionable takeaways.
 - Do NOT blend facts from multiple different <chunk> tags into a single sentence if they are unrelated or from different documents.
 - Every claim in the \`claims\` array MUST be verifiable against exactly ONE \`chunk_id\` (found in the id attribute of the <chunk> tag).
 - Do NOT combine tags to form a single claim. Each claim maps 1:1 to a specific <chunk> tag.

@@ -13,7 +13,7 @@ export async function expandQueryFast(query: string): Promise<string> {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'openai/gpt-oss-120b',
+      model: 'openai/gpt-oss-20b',
       messages: [
         { role: 'system', content: 'You are a search query expander. Rewrite the user query to include relevant medical/nutritional synonyms. Output ONLY the rewritten query, nothing else.' },
         { role: 'user', content: query },

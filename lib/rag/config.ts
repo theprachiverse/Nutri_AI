@@ -9,7 +9,7 @@ export const RAG_CONFIG = {
     population_boost: 0.01,
   },
   context: {
-    max_budget_tokens: 1200,
+    max_budget_tokens: 900,
     table_sibling_expansion: true,
   },
   scope: {
