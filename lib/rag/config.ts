@@ -5,7 +5,7 @@ export const RAG_CONFIG = {
     k_per_doc: 2,
     max_docs_per_answer: 3,
     rrf_k: 60,
-    min_cosine_score: 0.20,
+    min_cosine_score: 0.06,
     population_boost: 0.01,
   },
   context: {

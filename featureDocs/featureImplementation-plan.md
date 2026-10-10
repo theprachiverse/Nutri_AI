@@ -133,11 +133,11 @@ This document provides a highly detailed, phase-by-phase execution plan for Mile
   - Pass the query and each chunk through a local Cross-Encoder (e.g., `Xenova/ms-marco-MiniLM-L-6-v2`) via Transformers.js to calculate a highly accurate relevance score.
   - Sort chunks by this new Cross-Encoder score to drastically improve precision before context budgeting.
 - [x] **5.3 Coverage Gate (`lib/rag/coverage.ts`):** 
-  - Evaluate the top candidate's cross-encoder score against `MIN_SCORE` (e.g., 2.0 depending on the model).
+  - Evaluate the top candidate's cross-encoder score against `min_cosine_score` (calibrated to 0.06 in `config.ts` to allow broad nutrition queries while rejecting out-of-domain queries).
   - If no chunks pass, instantly short-circuit to a `not_covered` response.
 - [x] **5.4 Context Builder (`lib/rag/context.ts`):** 
   - Handle expansion logic: Pull in adjacent row-group chunks for tables and "Remarks" sibling chunks for recommendations.
-  - Employ `js-tiktoken` (`o200k_base`) to accumulate chunks until the strict 2,800 token budget is reached.
+  - Employ `js-tiktoken` (`o200k_base`) to accumulate chunks until the strict 1,200 token budget is reached.
   - Format the final context block into `<chunk>` XML tags containing metadata attributes.
 
 ---
@@ -151,7 +151,7 @@ This document provides a highly detailed, phase-by-phase execution plan for Mile
   - Write System Prompt v2 enforcing strict grounding, marker constraints, and anti-blending rules.
   - Configure the Groq call (`openai/gpt-oss-120b`) with `temperature: 0`, `max_completion_tokens: 4000` (to prevent JSON truncation), and `zodResponseFormat` mapped to `ModelOutputSchema`.
 - [x] **6.2 Deterministic Verifier & Self-Correction (`lib/rag/verify.ts`):** 
-  - **V1-V2:** Assert `chunk_id` exists in context and `quote` is a near-perfect substring (fuzzy ratio >= 0.9).
+  - **V1-V2:** Assert `chunk_id` exists in context and `quote` is a substring (normalized for typographic quotes, punctuation, and PDF whitespace artifacts).
   - **V3-V4:** Normalize and assert that all numeric tokens in the claim/answer appear in the cited chunk. 
   - **V5-V7:** Enforce marker integrity (strip orphans), prevent blending (no sentences citing multiple docs), and validate disagreement integrity.
   - **Self-Correction Loop:** If verification fails (e.g., dropped claims due to hallucination), trigger a self-correction LLM pass providing the errors and asking for a rewritten, compliant response before falling back to `not_covered`.
@@ -174,11 +174,12 @@ This document provides a highly detailed, phase-by-phase execution plan for Mile
 - [x] **7.2 UI Refusals & Status Handling (`components/RefusalCard.tsx`):** 
   - Implement a red `error-container` card for `out_of_scope` safety rejections.
   - Implement a neutral `tertiary-fixed` card for `not_covered` honesty rejections, explicitly listing the `searched_documents`.
-- [x] **7.3 Rich Citation UI (`components/*`):** 
+- [x] **7.3 Rich Citation & Saved Insights UI (`components/*`):** 
   - **`ClaimBadge.tsx`**: Render publisher and year (e.g., `WHO · 2023`).
   - **`SourcesPanel.tsx`** & **`SourceChunkCard.tsx`**: Render the full chunk context, highlighting the exact `quote`. Include hierarchy, population tags, and PDF outbound links.
   - **`DisagreementCallout.tsx`**: Render conflicting viewpoints side-by-side.
-  - **`MessageBubble.tsx`**: Group and format claims cleanly by document. Update layout states.
+  - **`MessageBubble.tsx`**: Group and format claims cleanly by document. Added "Save Takeaways to Notes" bookmarking button and "Copy Answer" button; eliminated ungrounded follow-up hallucinations.
+  - **`SavedInsights.tsx`**: Sticky persistent notebook panel on the left (`localStorage` synced) allowing one-click takeaway bookmarking, evidence jumping, note deletion, and Markdown export.
 
 ---
 
@@ -209,3 +210,5 @@ During testing, the system underwent a major optimization to reduce token bloat 
 2. **Context Window Reduction:** Because the cross-encoder precisely ranks relevant chunks at the very top, the `max_budget_tokens` was drastically lowered from `2800` to `1200`. 
 3. **XML Minification:** Extraneous attributes like `page="..."` were removed from the prompt `<chunk>` wrappers.
 4. **Result:** Prompt token consumption was reduced by ~50% (from ~3,200 to ~1,650), significantly reducing latency and cost while preserving extraction quality.
+5. **Coverage Gate Calibration:** Cross-encoder sigmoid scores on broad conceptual queries (e.g. *"What are the essential nutrients I need to know about?"*) score ~0.18, whereas completely irrelevant queries score 0.0000. `min_cosine_score` was calibrated from 0.20 to 0.06 to eliminate false negative refusals on legitimate questions while maintaining strict rejection of off-topic inputs.
+6. **Saved Insights Notebook Transition:** Ungrounded suggested follow-ups (which caused hallucinated topics and search failures) were replaced with a deterministic, client-side "Saved Insights / Quick Notes" panel with bookmarking, citation linking, and Markdown export, eliminating token overhead.

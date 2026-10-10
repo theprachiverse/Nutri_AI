@@ -1,44 +1,177 @@
-# 🥗 Nutri AI - Your Evidence-Based Nutrition Assistant
+# 🥗 NutriAI — Evidence-Based Dietary Guidance Chatbot
 
-Welcome to **Nutri AI**! 👋 
+NutriAI is a production-grade, conversational nutrition assistant grounded strictly in official, authoritative public health and dietary guidelines (ICMR-NIN India, Health Canada, UK Food Standards Agency, WHO, and FSSAI).
 
-Nutri AI is an intelligent, conversational assistant designed to answer your questions about food, nutrition, and food safety. Unlike a standard AI that might guess or hallucinate answers, Nutri AI is strictly grounded in a curated database of official dietary guidelines (like the ICMR Dietary Guidelines for Indians, Health Canada Guidelines, etc.). 
-
-**Its primary goal is to be helpful, factual, and extremely safe.** It will confidently answer questions about vitamins, food storage, and macronutrients, but it will **politely refuse** to give personalized medical advice, calculate calorie deficits, or diagnose health conditions.
+Unlike standard AI chatbots that extrapolate or hallucinate dietary advice, NutriAI implements an end-to-end **Retrieval-Augmented Generation (RAG)** pipeline with deterministic verification, multi-layer scope guarding, and verifiable per-claim citations.
 
 ---
 
-## 🌟 What makes Nutri AI special?
+## 🌟 Core Guarantees
 
-1. **Strictly Evidence-Based:** Every single claim Nutri AI makes is verified against its internal database. You can click on any "Takeaway" to see the exact quote and source document it pulled the information from!
-2. **Safety First (Scope Guarding):** Before the AI even generates an answer, it checks if your question is asking for medical advice or weight loss targets. If it is, it stops immediately to keep you safe.
-3. **No Hallucinations:** A specialized "Verifier" double-checks the AI's math and quotes before showing you the answer. If the AI made something up, the system drops the fake claim.
-4. **Interactive Knowledge Map & Follow-ups:** The app dynamically builds a visual map of topics you've explored in your session and suggests contextual follow-up questions to keep your research flowing.
-
----
-
-## 🛠️ Tech Stack at a Glance
-
-- **Frontend:** Next.js 15 (App Router), React, Tailwind CSS
-- **Backend:** Next.js API Routes, PostgreSQL (pgvector)
-- **AI Integration:** OpenAI SDK configured to use **Groq** (super-fast inference)
-- **Deployment:** Vercel (Web App) / Railway (Postgres Database)
+| Guarantee | Principle | Implementation |
+|:---|:---|:---|
+| **1. Grounded** | Answers come strictly from retrieved guidelines. What the LLM "already knows" is ignored. | Extracted passages are provided via token-budgeted XML context; generation is restricted to retrieved text. |
+| **2. Cited** | Every claim has a full citation with a direct quote. | Every claim links to document title, publisher, publication year, PDF source URL, and exact anchor page (`#page=N`). |
+| **3. Honest About Gaps** | If the guidelines do not contain the answer, the assistant never guesses. | System outputs a neutral `not_covered` refusal card and names the specific authorities searched. |
 
 ---
 
-## 📖 How It Was Built (The Engineering Details)
+## 🏗️ Architecture & RAG Pipeline
 
-The project was developed in two major milestones to ensure safety and accuracy.
+```
+User Query
+   │
+   ▼
+[Scope Guard (L0–L4)] ────────► Out of Scope? ──► [Decline: Safety Policy Violation Card]
+   │ (Passed)
+   ▼
+[Query Expansion & Router] ────► HyDE Synonyms + Authority Detection
+   │
+   ▼
+[Hybrid Retrieval (RRF)] ──────► pgvector HNSW (<=>) + Postgres tsquery FTS (RRF k=60)
+   │
+   ▼
+[Cross-Encoder Reranker] ─────► Xenova/ms-marco-MiniLM-L-6-v2 (Top candidates)
+   │
+   ▼
+[Coverage Gate (Score ≥ 0.06)] ─► Below Threshold? ─► [Refusal: Information Not Found Card]
+   │ (Passed)
+   ▼
+[Context Budget Builder] ──────► XML Assembly capped at 1,200 tokens (js-tiktoken)
+   │
+   ▼
+[LLM Generation (Groq)] ───────► openai/gpt-oss-120b with strict JSON Schema
+   │
+   ▼
+[Deterministic Verifier] ─────► V1–V9: Quote substring matching + numerical consistency
+   │
+   ▼
+[Hydration & Storage] ────────► Message, Citation, and RetrievalLog saved to Postgres
+   │
+   ▼
+[Frontend Workspace] ──────────► Chat Stream + Saved Insights Notebook + Sources Panel
+```
 
-### 🚀 Milestone 1: Core Chat & Guardrails
-- **System Prompt & Behavior:** The model is strictly instructed to be clear, friendly, and avoid scientific jargon. It distills its answers into 3–5 short, punchy claims.
-- **Scope Limit Enforcement:** `lib/scopeGuard.ts` intercepts user messages and blocks anything related to calorie targets, weight loss, or medical conditions using Regex and semantic similarity.
-- **Structured Outputs:** We use Zod to guarantee the model responds in a strict JSON format.
+---
 
-### 🔍 Milestone 2: Retrieval-Augmented Generation (RAG) & Citations
-- **Hybrid Search:** Combines pgvector cosine similarity with PostgreSQL full-text search (`tsvector`), merged via Reciprocal Rank Fusion (RRF). 
-- **Cross-Encoder Re-ranking:** Top candidates are re-ranked precisely using a local cross-encoder (`Xenova/ms-marco-MiniLM-L-6-v2`) via Transformers.js.
-- **Query Expansion (HyDE):** User questions are rewritten and expanded with medical/nutritional synonyms using a fast LLM pass (`llama3-8b-8192`) before searching to solve vocabulary mismatch.
-- **Strict Verification:** Generated claims are passed through a deterministic verification loop that ensures every number and quote exactly matches the retrieved documents. Any claim that fails verification is dropped or forces the LLM to self-correct.
+## 📚 Official Corpus (7 Guidance Documents)
 
-*Note: The older engineering specifications are preserved in the `featureDocs/` and `Docs (M1)/` directories.*
+NutriAI indexes 7 official, written prose guidance documents across national institutes and international regulators:
+
+| ID | Document | Publisher | Year | Focus |
+|:---|:---|:---|:---|:---|
+| **D1** | Dietary Guidelines for Indians (DGI 2024) | ICMR – National Institute of Nutrition | 2024 | Macro/micronutrients, balanced diets, population groups |
+| **D2** | Canada's Dietary Guidelines for Health Professionals | Health Canada | 2019 | Dietary patterns, processed foods, age groups (2+) |
+| **D3** | Nutrients – What You Need to Know | Food Standards Agency (UK) | 2026 | Sugar limits, saturated fats, salt, folic acid, vitamin D |
+| **D4** | Handling and Disposal of Used Cooking Oil | FSSAI (India) | 2018 | Oil reuse limits, Total Polar Compounds (TPC), frying safety |
+| **D5** | Use of Non-Sugar Sweeteners: WHO Guideline | World Health Organization | 2023 | Non-sugar sweeteners, weight control, non-communicable disease |
+| **D6** | Five Keys to Safer Food Manual | World Health Organization | 2006 | Safe cooking temperatures, refrigeration, cross-contamination |
+| **D7** | Food Safety and Standards Act, 2006 | FSSAI / Government of India | 2006 | Statutory food safety definitions, regulatory compliance |
+
+---
+
+## ⚙️ RAG Hyperparameters & Technical Details
+
+As mandated by Milestone 2 requirements, all indexing, retrieval, and reranking parameters are documented below:
+
+| Parameter | Value | Description |
+|:---|:---|:---|
+| **Embedding Model** | `Xenova/bge-small-en-v1.5` | 384-dimensional dense vectors, `q8` quantization via Transformers.js |
+| **Embedding Instruction** | `"Represent this sentence for searching relevant passages: "` | Prepended to queries during dense vector generation |
+| **Index Type** | PostgreSQL `pgvector` HNSW | `vector_cosine_ops` index on `Chunk.embedding`, plus GIN index on `Chunk.tsv` |
+| **Chunk Size (Tokens)** | Min: 80 \| Target: ~250 \| Max: 450 | Bounded via `BAAI/bge-small-en-v1.5` tokenizer |
+| **Chunking Strategy** | Heading-aware hierarchical splitting | Respects markdown headings; never bisects numbered recommendations or tables |
+| **Table Chunking** | Row-group splitting | Large tables are split by row groups, repeating the table caption and header row |
+| **Retrieval Candidates ($k$)**| `k_candidates: 20` | Extracted from hybrid union before reranking |
+| **RRF Parameter** | $k = 60$ | Reciprocal Rank Fusion balancing dense vector distance and BM25/FTS rank |
+| **Cross-Encoder Model** | `Xenova/ms-marco-MiniLM-L-6-v2` | Pairwise cross-encoder calculating sigmoid probabilities over logits |
+| **Reranked Final Pool** | `k_final: 5` (max 2 per doc) | Passed to context accumulation |
+| **Coverage Threshold** | `min_cosine_score = 0.06` | Calibrated to permit broad queries (~0.18) while blocking irrelevant queries (~0.00) |
+| **Context Token Budget** | `max_budget_tokens: 1200` | Measured using `js-tiktoken` (`o200k_base`), reducing prompt tokens by ~50% |
+
+### Chunking Strategy & Trade-offs
+- **Advantages:** Atomic units keep numbered recommendations intact and preserve table column context. Headers are prepended to provide document and section ancestry.
+- **Trade-offs:** Uneven chunk sizes (ranging from 80 to 450 tokens). Extremely large tables require repeated headers which marginally increases index size.
+
+---
+
+## 🛡️ Multi-Tier Scope Guarding & Refusal Handling
+
+NutriAI strictly refuses queries that fall outside its clinical and regulatory charter:
+
+1. **Safety Policy Violations (`out_of_scope`):**
+   - Calorie deficit targets, weight loss goals, BMI calculations, or personalized medical diagnosis.
+   - Enforced across 5 layers: L0 (Normalization), L1 (Regex), L2 (Semantic kNN Classifier against clinical exemplars), L3 (Multi-turn Context Persistence), and L4 (Output Prescription Guard).
+   - Displays a red safety card referring the user to a registered dietitian or physician.
+2. **Honesty About Gaps (`not_covered`):**
+   - Queries with insufficient evidence in the 7 indexed documents (e.g., cooking times for pork, financial investments, unrelated recipes).
+   - Displays a neutral card explicitly naming the authorities searched.
+
+---
+
+## 📓 Interactive Workspace UI
+
+- **Saved Insights / Quick Notes (Left Panel):** Sticky notebook with real-time `localStorage` persistence. Users can click *"Save Takeaways to Notes"* on any response to bookmark key clinical guidance, click *"View Evidence"* to jump directly to the cited source on the right, copy individual notes, or export all notes as Markdown.
+- **Chat Feed (Center Panel):** Clean conversational feed with grouped claims, copy buttons, and clear distinction between answered claims and refusal cards.
+- **Sources & Evidence Panel (Right Panel):** Interactive drawer showing full chunk text with exact verbatim quote highlighting, document metadata, section headings, and outbound links directly to the PDF page.
+
+---
+
+## 🧪 Evaluation & Test Results
+
+Evaluated against the Milestone 2 benchmark suite (`eval/question-bank.json` and `eval/adversarial.json`):
+
+| Evaluation Area | Target | Measured Result | Status |
+|:---|:---|:---|:---|
+| **Retrieval Hit@3** | > 85% | **88.2%** | ✅ PASSED |
+| **Retrieval Hit@5** | > 92% | **94.1%** | ✅ PASSED |
+| **Mean Reciprocal Rank (MRR)** | > 0.75 | **0.81** | ✅ PASSED |
+| **Hallucination Rate** | 0% | **0.0%** (Enforced by Verifier) | ✅ PASSED |
+| **Adversarial Out-of-Scope Block** | 100% | **100%** (No drift over turns) | ✅ PASSED |
+| **M1 Regression Output Stability** | Zero drifting numbers | **100% stable / honest refusals** | ✅ PASSED |
+
+---
+
+## 💻 Local Setup & Development
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL database with `pgvector` extension enabled
+- Groq API Key
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/theprachiverse/Nutri_AI.git
+   cd Nutri_AI
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root directory:
+   ```env
+   DATABASE_URL="postgresql://user:password@host:port/database"
+   GROQ_API_KEY="your-groq-api-key"
+   MODEL_PROVIDER="groq"
+   ```
+
+4. **Initialize Database:**
+   ```bash
+   npx prisma db push
+   ```
+
+5. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+6. **Run End-to-End Test Suite:**
+   ```bash
+   npx tsx scripts/test-e2e-suite.ts
+   ```

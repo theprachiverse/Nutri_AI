@@ -29,14 +29,24 @@ export async function verifyAndCorrect(
         continue;
       }
       
-      // V2: quote is a substring (fuzzy)
+      // V2: quote is a substring (fuzzy/normalized)
       const cleanText = chunk.text.replace(/\s+/g, ' ').toLowerCase();
       const cleanQuote = claim.quote.replace(/\s+/g, ' ').toLowerCase();
       
       if (!cleanText.includes(cleanQuote)) {
-        errors.push(`Claim "${claim.claim_text}": quote "${claim.quote}" not found in chunk.`);
-        droppedClaims.push(claim);
-        continue;
+        // Fallback: normalize quotes and punctuation to prevent drops from PDF extraction spacing artifacts
+        const norm = (s: string) => 
+          s.replace(/[\u2018\u2019'`"]/g, '')
+           .replace(/[,\.;:\-]/g, ' ')
+           .replace(/\s+/g, ' ')
+           .trim()
+           .toLowerCase();
+
+        if (!norm(chunk.text).includes(norm(claim.quote))) {
+          errors.push(`Claim "${claim.claim_text}": quote "${claim.quote}" not found in chunk.`);
+          droppedClaims.push(claim);
+          continue;
+        }
       }
       
       // V3-V4: numerical consistency
