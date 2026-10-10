@@ -24,6 +24,7 @@ export default function ChatWindow() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null);
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
+  const [isKnowledgeMapOpen, setIsKnowledgeMapOpen] = useState(true);
   const [conversationId, setConversationId] = useState<string | null>(null);
 
   const [loadingStatus, setLoadingStatus] = useState<string | null>(null);
@@ -114,7 +115,7 @@ export default function ChatWindow() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-        <div className="h-20 w-full px-gutter flex items-center justify-between">
+        <div className="h-20 w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-space-md">
             <div className="flex items-center gap-space-sm cursor-pointer" onClick={() => { setMessages([]); setConversationId(null); setSelectedClaim(null); }}>
               <svg className="h-8 w-auto text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -128,20 +129,47 @@ export default function ChatWindow() {
               <span className="font-label-sm text-label-sm text-primary">Ready to help</span>
             </div>
           </div>
-          <div className="flex items-center gap-space-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Knowledge Map Toggle */}
+            <button 
+              onClick={() => setIsKnowledgeMapOpen(!isKnowledgeMapOpen)}
+              className={`h-9 px-3 rounded-full transition-all flex items-center gap-1.5 text-xs sm:text-sm font-semibold border ${
+                isKnowledgeMapOpen 
+                  ? 'bg-teal-50 text-teal-800 border-teal-300 shadow-2xs' 
+                  : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+              }`}
+              aria-label="Toggle Knowledge Map"
+              title="Toggle Knowledge Map"
+            >
+              <span className="material-symbols-outlined text-[18px] text-teal-700">account_tree</span>
+              <span className="hidden md:inline">Knowledge Map</span>
+            </button>
+
+            {/* Sources Toggle */}
             <button 
               onClick={() => {
                 setIsSourcesOpen(!isSourcesOpen);
                 if (isSourcesOpen) setSelectedClaim(null);
               }}
-              className="w-10 h-10 rounded-full hover:bg-surface-container-low text-primary transition-colors flex items-center justify-center"
+              className={`h-9 px-3 rounded-full transition-all flex items-center gap-1.5 text-xs sm:text-sm font-semibold border ${
+                isSourcesOpen 
+                  ? 'bg-teal-50 text-teal-800 border-teal-300 shadow-2xs' 
+                  : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
+              }`}
               aria-label="Toggle Sources Panel"
+              title="Toggle Sources Panel"
             >
-              <span className="material-symbols-outlined text-[22px]">
+              <span className="material-symbols-outlined text-[18px] text-primary">
                 {isSourcesOpen ? 'menu_open' : 'menu_book'}
               </span>
+              <span className="hidden md:inline">Sources</span>
+              {selectedClaim && (
+                <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+              )}
             </button>
-            <div className="relative ml-space-xs">
+
+            {/* User Avatar */}
+            <div className="relative ml-1">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center ring-2 ring-surface-container-lowest">
                 <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
               </div>
@@ -152,34 +180,58 @@ export default function ChatWindow() {
       </header>
 
       <main className="w-full pt-20">
-        <div className="flex flex-col w-full">
-          <div className="flex flex-col lg:flex-row w-full max-w-[1560px] mx-auto min-h-[calc(100vh-5rem)]">
-            {/* LEFT COLUMN */}
-            <div className="flex-1 flex flex-col justify-between px-4 sm:px-6 lg:px-10 py-6 min-w-0">
-              <MessageList 
-                messages={messages} 
-                isLoading={isLoading} 
-                loadingStatus={loadingStatus}
-                onSelectClaim={handleSelectClaim} 
-                selectedClaim={selectedClaim}
-                onSend={handleSend}
-              />
-              <InputBox onSend={handleSend} disabled={isLoading} />
-            </div>
+        <div className="flex flex-row w-full max-w-[1800px] mx-auto min-h-[calc(100vh-5rem)] relative">
+          {/* Mobile backdrop for Knowledge Map */}
+          {isKnowledgeMapOpen && (
+            <div 
+              className="fixed inset-0 bg-black/30 backdrop-blur-xs z-30 lg:hidden"
+              onClick={() => setIsKnowledgeMapOpen(false)}
+            />
+          )}
 
-            {/* RIGHT COLUMN */}
-            {isSourcesOpen ? (
-              <SourcesPanel 
-                selectedClaim={selectedClaim} 
-                onClose={() => {
-                  setIsSourcesOpen(false);
-                  setSelectedClaim(null);
-                }} 
-              />
-            ) : (
-              <KnowledgeMap messages={messages} />
-            )}
+          {/* LEFT SIDE: Session Knowledge Map */}
+          {isKnowledgeMapOpen && (
+            <KnowledgeMap 
+              messages={messages} 
+              onClose={() => setIsKnowledgeMapOpen(false)}
+              onTopicClick={(topic) => handleSend(topic)}
+            />
+          )}
+
+          {/* CENTER: Main Chat Conversation */}
+          <div className="flex-1 flex flex-col justify-between px-3 sm:px-6 lg:px-8 py-6 min-w-0">
+            <MessageList 
+              messages={messages} 
+              isLoading={isLoading} 
+              loadingStatus={loadingStatus}
+              onSelectClaim={handleSelectClaim} 
+              selectedClaim={selectedClaim}
+              onSend={handleSend}
+            />
+            <InputBox onSend={handleSend} disabled={isLoading} />
           </div>
+
+          {/* Mobile backdrop for Sources Panel */}
+          {isSourcesOpen && (
+            <div 
+              className="fixed inset-0 bg-black/30 backdrop-blur-xs z-30 lg:hidden"
+              onClick={() => {
+                setIsSourcesOpen(false);
+                setSelectedClaim(null);
+              }}
+            />
+          )}
+
+          {/* RIGHT SIDE: Sources Panel */}
+          {isSourcesOpen && (
+            <SourcesPanel 
+              selectedClaim={selectedClaim} 
+              onClose={() => {
+                setIsSourcesOpen(false);
+                setSelectedClaim(null);
+              }} 
+            />
+          )}
         </div>
       </main>
     </>

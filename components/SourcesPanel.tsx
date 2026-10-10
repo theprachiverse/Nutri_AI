@@ -4,7 +4,7 @@ import SourceChunkCard from './SourceChunkCard';
 
 export default function SourcesPanel({ selectedClaim, onClose }: { selectedClaim: Claim | null, onClose: () => void }) {
   return (
-    <aside className="w-full lg:w-96 bg-white p-6 sm:p-7 flex flex-col justify-between shadow-sm border-l border-slate-200 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] overflow-y-auto" id="sources-sidebar">
+    <aside className="fixed inset-y-0 right-0 z-40 w-80 sm:w-96 lg:w-80 xl:w-96 bg-white p-5 sm:p-7 flex flex-col justify-between shadow-xl lg:shadow-none border-l border-slate-200 lg:static lg:h-[calc(100vh-5rem)] overflow-y-auto animate-slide-in-right pt-20 lg:pt-6 shrink-0" id="sources-sidebar">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-surface-container">
