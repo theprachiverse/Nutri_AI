@@ -28,11 +28,12 @@ interface Message {
   content: string;
   claims?: Claim[];
   disagreements?: Disagreement[];
+  suggested_follow_ups?: string[];
   timestamp?: string;
   isError?: boolean;
 }
 
-export default function MessageBubble({ message, onSelectClaim, selectedClaim }: { message: Message, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
+export default function MessageBubble({ message, onSelectClaim, selectedClaim, onSend }: { message: Message, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null, onSend?: (text: string) => void }) {
   const isUser = message.role === 'user';
   
   if (isUser) {
@@ -120,6 +121,22 @@ export default function MessageBubble({ message, onSelectClaim, selectedClaim }:
 
       {message.disagreements && message.disagreements.length > 0 && (
         <DisagreementCallout disagreements={message.disagreements} />
+      )}
+
+      {message.suggested_follow_ups && message.suggested_follow_ups.length > 0 && (
+        <div className="relative z-10 mt-6 pt-2">
+          <div className="flex flex-wrap gap-2.5">
+            {message.suggested_follow_ups.map((question, idx) => (
+              <button
+                key={idx}
+                onClick={() => onSend && onSend(question)}
+                className="text-left px-4 py-2 rounded-full border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 text-sm font-medium transition-colors shadow-sm"
+              >
+                {question}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="relative z-10 mt-6 pt-4 border-t border-surface-container flex items-center justify-between text-outline">

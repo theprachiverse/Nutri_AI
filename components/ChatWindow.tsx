@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import MessageList from './MessageList';
 import InputBox from './InputBox';
 import SourcesPanel from './SourcesPanel';
+import KnowledgeMap from './KnowledgeMap';
 import { ClaimV2 as Claim } from '@/lib/schema';
 
 interface Message {
@@ -10,6 +11,9 @@ interface Message {
   content: string;
   claims?: Claim[];
   disagreements?: any[];
+  suggested_follow_ups?: string[];
+  primary_topic?: string | null;
+  related_topics?: string[] | null;
   status?: 'answered' | 'not_covered' | 'out_of_scope';
   timestamp?: string;
   isError?: boolean;
@@ -82,6 +86,9 @@ export default function ChatWindow() {
                     content: data.answer_text || data.error || 'No answer provided.', 
                     claims: data.claims || [],
                     disagreements: data.disagreements || [],
+                    suggested_follow_ups: data.suggested_follow_ups || [],
+                    primary_topic: data.primary_topic,
+                    related_topics: data.related_topics || [],
                     status: data.status || 'answered',
                     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                   }
@@ -155,12 +162,13 @@ export default function ChatWindow() {
                 loadingStatus={loadingStatus}
                 onSelectClaim={handleSelectClaim} 
                 selectedClaim={selectedClaim}
+                onSend={handleSend}
               />
               <InputBox onSend={handleSend} disabled={isLoading} />
             </div>
 
             {/* RIGHT COLUMN */}
-            {isSourcesOpen && (
+            {isSourcesOpen ? (
               <SourcesPanel 
                 selectedClaim={selectedClaim} 
                 onClose={() => {
@@ -168,6 +176,8 @@ export default function ChatWindow() {
                   setSelectedClaim(null);
                 }} 
               />
+            ) : (
+              <KnowledgeMap messages={messages} />
             )}
           </div>
         </div>

@@ -9,11 +9,12 @@ interface Message {
   content: string;
   claims?: Claim[];
   disagreements?: any[];
+  suggested_follow_ups?: string[];
   status?: 'answered' | 'not_covered' | 'out_of_scope';
   timestamp?: string;
 }
 
-export default function MessageList({ messages, isLoading, loadingStatus, onSelectClaim, selectedClaim }: { messages: Message[], isLoading: boolean, loadingStatus?: string | null, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null }) {
+export default function MessageList({ messages, isLoading, loadingStatus, onSelectClaim, selectedClaim, onSend }: { messages: Message[], isLoading: boolean, loadingStatus?: string | null, onSelectClaim: (claim: Claim) => void, selectedClaim: Claim | null, onSend: (text: string) => void }) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function MessageList({ messages, isLoading, loadingStatus, onSele
             if (msg.role === 'assistant' && msg.status && msg.status !== 'answered') {
               return <RefusalCard key={idx} status={msg.status} message={msg.content} />;
             }
-            return <MessageBubble key={idx} message={msg} onSelectClaim={onSelectClaim} selectedClaim={selectedClaim} />;
+            return <MessageBubble key={idx} message={msg} onSelectClaim={onSelectClaim} selectedClaim={selectedClaim} onSend={onSend} />;
           })}
         </div>
       )}
