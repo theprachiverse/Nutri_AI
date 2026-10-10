@@ -32,7 +32,7 @@ export default function KnowledgeMap({ messages }: { messages: any[] }) {
         <div className="absolute left-[39px] top-6 bottom-6 w-0.5 bg-teal-100/50 -z-10"></div>
         <div className="space-y-12">
           {topicNodes.map((node, i) => (
-            <div key={i} className="relative z-10 animate-fade-in" style={{ animationDelay: \`\${i * 0.1}s\` }}>
+            <div key={i} className="relative z-10 animate-fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
               {/* Primary Topic Bubble */}
               <div className="flex items-center gap-4">
                 <div className="w-8 h-8 rounded-full bg-teal-600 shadow-md flex items-center justify-center ring-4 ring-white shrink-0">
