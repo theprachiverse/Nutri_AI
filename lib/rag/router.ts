@@ -1,5 +1,6 @@
 import { normalizeQuery } from '../scope/normalize';
 import { Message } from '../scope/conversation';
+import { expandQueryFast } from '../model';
 
 export type RouteContext = {
   query: string;
@@ -59,6 +60,11 @@ export async function routeAndExpandQuery(
   }
   
   const expandedQueries = [query];
+  
+  const hydeQuery = await expandQueryFast(query);
+  if (hydeQuery !== query) {
+    expandedQueries.unshift(hydeQuery); // Put it first so it's the primary query for things that only check [0]
+  }
   
   if (chatHistory.length > 0) {
      const lastUserMsg = chatHistory.filter(m => m.role === 'user').pop();

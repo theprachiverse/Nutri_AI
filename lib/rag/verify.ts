@@ -81,7 +81,7 @@ export async function verifyAndCorrect(
       
       if (correctedValidation.validClaims.length === 0) {
          return { 
-           response: { status: 'not_covered' as const, answer_text: "The information cannot be verified based on the provided context.", claims: [], disagreements: null },
+           response: { status: 'not_covered' as const, answer_text: "The information cannot be verified based on the provided context.", claims: [], disagreements: null, suggested_follow_ups: null, primary_topic: null, related_topics: null },
            droppedClaims: [...droppedClaims, ...correctedValidation.errors]
          };
       }
@@ -90,7 +90,7 @@ export async function verifyAndCorrect(
       
     } catch (e) {
       console.error('Self correction failed', e);
-      return { response: { status: 'not_covered' as const, answer_text: "We found some information, but it could not be strictly verified against our sources.", claims: [], disagreements: null }, droppedClaims };
+      return { response: { status: 'not_covered' as const, answer_text: "We found some information, but it could not be strictly verified against our sources.", claims: [], disagreements: null, suggested_follow_ups: null, primary_topic: null, related_topics: null }, droppedClaims };
     }
   }
 

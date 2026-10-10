@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { hybridSearch } from '../lib/rag/retrieve';
 import { prisma } from '../lib/db';
 import { routeAndExpandQuery } from '../lib/rag/router';
+import { reranker } from '../lib/rag/rerank';
 
 async function main() {
   const bank = JSON.parse(fs.readFileSync('eval/question-bank.json', 'utf8'));
@@ -15,7 +16,8 @@ async function main() {
     const q = bank[i];
     console.log(`\n[Q${i+1}] ${q.question}`);
     const route = await routeAndExpandQuery(q.question, []);
-    const chunks = await hybridSearch(route.expandedQueries[0], 'all', null, route.docIds);
+    let chunks = await hybridSearch(route.expandedQueries[0], 'all', null, route.docIds);
+    chunks = await reranker.rerank(route.expandedQueries[0], chunks);
 
     let rank = -1;
     for (let j = 0; j < chunks.length; j++) {

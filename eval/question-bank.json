@@ -73,5 +73,15 @@
     "question": "Who should take Vitamin D supplements?",
     "expected_doc_id": "D3",
     "expected_section": "Nutrients - what you need to know > Vitamin D"
+  },
+  {
+    "question": "What is the advice on cooking oil and reusing it?",
+    "expected_doc_id": "D4",
+    "expected_section": "General"
+  },
+  {
+    "question": "What should my 2-month-old infant eat?",
+    "expected_doc_id": "D1",
+    "expected_section": "General"
   }
 ]

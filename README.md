@@ -38,6 +38,7 @@ The project was developed in two major milestones to ensure safety and accuracy.
 ### 🔍 Milestone 2: Retrieval-Augmented Generation (RAG) & Citations
 - **Hybrid Search:** Combines pgvector cosine similarity with PostgreSQL full-text search (`tsvector`), merged via Reciprocal Rank Fusion (RRF). 
 - **Cross-Encoder Re-ranking:** Top candidates are re-ranked precisely using a local cross-encoder (`Xenova/ms-marco-MiniLM-L-6-v2`) via Transformers.js.
+- **Query Expansion (HyDE):** User questions are rewritten and expanded with medical/nutritional synonyms using a fast LLM pass (`llama3-8b-8192`) before searching to solve vocabulary mismatch.
 - **Strict Verification:** Generated claims are passed through a deterministic verification loop that ensures every number and quote exactly matches the retrieved documents. Any claim that fails verification is dropped or forces the LLM to self-correct.
 
 *Note: The older engineering specifications are preserved in the `featureDocs/` and `Docs (M1)/` directories.*
