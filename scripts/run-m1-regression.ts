@@ -42,6 +42,8 @@ async function main() {
     } catch(e) {
       md += `**Error:** ${(e as Error).message}\n\n---\n\n`;
     }
+    // Pause between calls to respect Groq rate limits
+    await new Promise(r => setTimeout(r, 2000));
   }
 
   if (!fs.existsSync('failure-log')) fs.mkdirSync('failure-log');

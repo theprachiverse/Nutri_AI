@@ -3,9 +3,10 @@ import React from 'react';
 interface RefusalCardProps {
   status: 'out_of_scope' | 'not_covered';
   message: string;
+  searchedDocuments?: string[];
 }
 
-export default function RefusalCard({ status, message }: RefusalCardProps) {
+export default function RefusalCard({ status, message, searchedDocuments }: RefusalCardProps) {
   if (status === 'out_of_scope') {
     return (
       <div className="w-full bg-error-container rounded-3xl shadow-md p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-error mb-6">
@@ -24,6 +25,10 @@ export default function RefusalCard({ status, message }: RefusalCardProps) {
     );
   }
 
+  const docNames = searchedDocuments && searchedDocuments.length > 0 && !searchedDocuments.includes('All')
+    ? searchedDocuments.join(', ')
+    : 'ICMR-NIN India, Health Canada, UK FSA, FSSAI, and WHO';
+
   return (
     <div className="w-full bg-tertiary-fixed rounded-3xl shadow-md p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-tertiary-fixed-dim mb-6">
       <div className="relative z-10 flex items-center justify-between pb-4 border-b border-tertiary-fixed-dim">
@@ -38,7 +43,7 @@ export default function RefusalCard({ status, message }: RefusalCardProps) {
         </p>
         <div className="mt-4 p-4 bg-tertiary-container/10 rounded-xl border border-tertiary-fixed-dim">
           <p className="font-caption text-caption text-on-tertiary-fixed-variant">
-            We searched our dietary corpus (including ICMR, WHO, FDA) but could not find verified claims covering your specific question.
+            We searched our official dietary guidance corpus ({docNames}) but could not find verified evidence covering your specific question.
           </p>
         </div>
       </div>

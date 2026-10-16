@@ -34,7 +34,7 @@ export async function hybridSearch(
     : null;
   
   // Note: pgvector distance <=> is cosine distance
-  const results = await prisma.$queryRaw<RetrievedChunk[]>`
+  const runQuery = () => prisma.$queryRaw<RetrievedChunk[]>`
     WITH vector_search AS (
       SELECT id AS chunk_id,
              ROW_NUMBER() OVER (ORDER BY embedding <=> ${vectorStr}::vector) AS vector_rank
@@ -81,6 +81,15 @@ export async function hybridSearch(
     ORDER BY rrf_score DESC
     LIMIT ${kCandidates};
   `;
+
+  let results: RetrievedChunk[];
+  try {
+    results = await runQuery();
+  } catch (err: any) {
+    console.warn('Database query failed, retrying after pause...', err?.message || err);
+    await new Promise(r => setTimeout(r, 800));
+    results = await runQuery();
+  }
 
   if (mode === 'per_document') {
     const kPerDoc = RAG_CONFIG.retrieval.k_per_doc || 2;

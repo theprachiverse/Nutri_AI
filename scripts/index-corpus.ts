@@ -4,6 +4,10 @@ import * as path from 'path';
 import * as readline from 'readline';
 import { embedder } from '../lib/rag/embedder';
 
+if (typeof (process as any).loadEnvFile === 'function' && !process.env.DATABASE_URL) {
+  try { (process as any).loadEnvFile('.env'); } catch {}
+}
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -97,8 +101,9 @@ async function main() {
       const docId = item.doc_id;
       const chunkIndex = item.chunk_index ?? chunkIndexGlobal++;
       const chunkType = item.chunk_type ?? 'text';
-      const sectionHeading = item.section_heading ?? item.section ?? '';
-      const text = item.text;
+      const cleanStr = (s: string | null | undefined) => s ? s.replace(/\0/g, 'fi').replace(/[\u0000]/g, 'fi') : '';
+      const sectionHeading = cleanStr(item.section_heading ?? item.section ?? '');
+      const text = cleanStr(item.text);
       const pageStart = item.page_start ?? item.page_start ?? null;
       const pageEnd = item.page_end ?? item.page_end ?? null;
       const tokenCount = item.token_count ?? 0;
@@ -112,11 +117,12 @@ async function main() {
         INSERT INTO "Chunk" (
           "id", "documentId", "sectionHeading", "chunkIndex", "chunkType",
           "text", "pageStart", "pageEnd", "tokenCount", "population",
-          "excludedPop", "contentHash", "embedding"
+          "excludedPop", "contentHash", "embedding", "tsv"
         ) VALUES (
           ${chunkId}, ${docId}, ${sectionHeading}, ${chunkIndex}, ${chunkType},
           ${text}, ${pageStart}, ${pageEnd}, ${tokenCount}, ${population},
-          ${excludedPop}, ${contentHash}, ${embStr}::vector
+          ${excludedPop}, ${contentHash}, ${embStr}::vector,
+          to_tsvector('english', ${sectionHeading} || ' ' || ${text})
         )
         ON CONFLICT ("id") DO UPDATE SET
           "documentId" = EXCLUDED."documentId",
@@ -130,7 +136,8 @@ async function main() {
           "population" = EXCLUDED."population",
           "excludedPop" = EXCLUDED."excludedPop",
           "contentHash" = EXCLUDED."contentHash",
-          "embedding" = EXCLUDED."embedding"
+          "embedding" = EXCLUDED."embedding",
+          "tsv" = to_tsvector('english', EXCLUDED."sectionHeading" || ' ' || EXCLUDED."text")
       `;
     }
   };

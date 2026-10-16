@@ -4,7 +4,7 @@
 
 **Status:** not_covered
 
-**Answer:** Not covered by our sources.
+**Answer:** I could not find information about that in the provided sources.
 
 
 ---
@@ -13,14 +13,17 @@
 
 **Status:** not_covered
 
-**Answer:** I could not find information about the main food sources of Vitamin B12 in the provided sources.
+**Answer:** I could not find information about that in the provided sources.
 
 
 ---
 
 ## Q3: How much protein does a sedentary vegetarian adult need daily?
 
-**Error:** RATE_LIMIT_EXCEEDED
+**Status:** not_covered
+
+**Answer:** I could not find information about the specific protein requirement for a sedentary vegetarian adult in the provided sources.
+
 
 ---
 
@@ -28,7 +31,7 @@
 
 **Status:** not_covered
 
-**Answer:** I could not find information about how long cooked chicken can be safely stored in the fridge in the provided sources.
+**Answer:** I could not find information about that in the provided sources.
 
 
 ---
@@ -37,7 +40,7 @@
 
 **Status:** not_covered
 
-**Answer:** Not covered by our sources.
+**Answer:** I could not find information about refreezing meat that has been thawed in the fridge in the provided sources.
 
 
 ---
@@ -46,13 +49,11 @@
 
 **Status:** answered
 
-**Answer:** Boiling vegetables does not destroy all their vitamins, but it can lead to loss of some, especially water‑soluble ones like B‑complex vitamins and vitamin C, particularly if the cooking water is poured out. Using just enough water and not draining it helps retain nutrients such as folate.
+**Answer:** Boiling does not destroy all vitamins, but heat‑sensitive vitamins such as B‑complex and vitamin C can be reduced, especially with prolonged cooking or when the cooking water is discarded.
 
 **Claims:**
-- Boiling can cause loss of B complex vitamins and vitamin C, especially if the cooking water is discarded.
-  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] B complex vitamins and vitamin C may be lost if the cooking water after boiling is discarded.
-- Boiling with just enough water and not draining it helps retain folate in legumes.
-  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] Boiling with just enough water, without having to drain the water, is the best method to retain folate in legumes.
+- Boiling can cause loss of B‑complex vitamins and vitamin C, especially if the cooking water is discarded, and prolonged boiling further reduces vitamin content.
+  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] B complex vitamins and vitamin C may be lost if the cooking water after boiling is discarded. Prolonged boiling also results in the loss of vitamins.
 
 ---
 
@@ -60,17 +61,28 @@
 
 **Status:** not_covered
 
-**Answer:** Not covered by our sources.
+**Answer:** I could not find information about that in the provided sources.
 
 
 ---
 
 ## Q8: Is coffee good or bad for your health overall?
 
-**Status:** not_covered
+**Status:** answered
 
-**Answer:** Not covered by our sources.
+**Answer:** The guideline notes that coffee provides caffeine and antioxidants, but excessive intake can raise blood pressure, cholesterol, and heart disease risk; therefore moderate consumption within a 300 mg caffeine limit is advised.
 
+**Claims:**
+- A cup (150 ml) of brewed coffee contains 80–120 mg of caffeine.
+  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] A cup (150ml) of brewed coffee contains 80–120mg of caffeine
+- Moderation in coffee consumption is advised so caffeine intake does not exceed 300 mg per day.
+  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] Moderation in tea and coffee consumption is advised so that caffeine intake does not exceed the tolerable limits (300mg/day)
+- Excessive coffee consumption is known to increase blood pressure and cause abnormalities in heartbeat.
+  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] Excessive consumption of coffee is known to increase blood pressure and cause abnormalities in heartbeat
+- High coffee intake is associated with elevated total and LDL cholesterol, triglycerides, and heart disease.
+  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] an association between coffee consumption and elevated levels of total and LDL cholesterol ('bad' cholesterol), triglycerides and heart disease has been demonstrated
+- Coffee contains flavonoids and antioxidant polyphenols that may reduce coronary heart disease risk.
+  - *Citation:* [Dietary Guidelines for Indians (DGI 2024) (ICMR – National Institute of Nutrition (India) 2024)] They also contain flavonoids and other antioxidant polyphenols, which may reduce the risk of coronary heart disease
 
 ---
 
@@ -78,7 +90,7 @@
 
 **Status:** not_covered
 
-**Answer:** Not covered by our sources.
+**Answer:** I could not find information about that in the provided sources.
 
 
 ---
@@ -87,7 +99,7 @@
 
 **Status:** not_covered
 
-**Answer:** Not covered by our sources.
+**Answer:** I could not find information about that in the provided sources.
 
 
 ---

@@ -11,6 +11,7 @@ interface Message {
   content: string;
   claims?: Claim[];
   disagreements?: any[];
+  searched_documents?: string[];
   status?: 'answered' | 'not_covered' | 'out_of_scope';
   timestamp?: string;
   isError?: boolean;
@@ -99,7 +100,7 @@ export default function ChatWindow() {
     setIsSourcesOpen(true);
   };
 
-  const handleSend = async (text: string) => {
+  const handleSend = async (text: string, documentFilter?: string[]) => {
     const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const newMessages: Message[] = [...messages, { role: 'user', content: text, timestamp: currentTime }];
     setMessages(newMessages);
@@ -112,7 +113,8 @@ export default function ChatWindow() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           userMessage: text,
-          conversationId: conversationId
+          conversationId: conversationId,
+          documentFilter: documentFilter
         }),
       });
 
@@ -152,6 +154,7 @@ export default function ChatWindow() {
                     content: data.answer_text || data.error || 'No answer provided.', 
                     claims: data.claims || [],
                     disagreements: data.disagreements || [],
+                    searched_documents: data.searched_documents || [],
                     status: data.status || 'answered',
                     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                   }

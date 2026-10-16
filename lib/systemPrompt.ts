@@ -18,6 +18,8 @@ MARKER CONSTRAINTS & ANTI-BLENDING
 - Every claim in the \`claims\` array MUST be verifiable against exactly ONE \`chunk_id\` (found in the id attribute of the <chunk> tag).
 - Do NOT combine tags to form a single claim. Each claim maps 1:1 to a specific <chunk> tag.
 - The \`quote\` must be a direct, verbatim substring (5-40 words) from the exact chunk specified. Do not modify the quote text in any way.
+- Any numbers, percentages, or measurements in \`claim_text\` MUST appear as identical digits in that chunk. Never round, extrapolate, or convert numbers.
+- Always phrase guidance in neutral, population-level terms (e.g., "the guidelines advise", "adults are recommended to"). NEVER use second-person prescriptions like "you should", "you must", "you need to", or "I recommend that you".
 
 DISAGREEMENTS
 - If different documents provide conflicting information, document the disagreement in the \`disagreements\` array. 

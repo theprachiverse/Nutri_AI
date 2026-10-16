@@ -10,6 +10,7 @@ interface Message {
   claims?: Claim[];
   disagreements?: any[];
   suggested_follow_ups?: string[];
+  searched_documents?: string[];
   status?: 'answered' | 'not_covered' | 'out_of_scope';
   timestamp?: string;
 }
@@ -75,7 +76,7 @@ export default function MessageList({
         <div className="pt-2">
           {messages.map((msg, idx) => {
             if (msg.role === 'assistant' && msg.status && msg.status !== 'answered') {
-              return <RefusalCard key={idx} status={msg.status} message={msg.content} />;
+              return <RefusalCard key={idx} status={msg.status} message={msg.content} searchedDocuments={msg.searched_documents} />;
             }
             const isAllSaved = Boolean(
               msg.claims && 

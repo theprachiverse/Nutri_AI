@@ -30,7 +30,8 @@ export async function verifyAndCorrect(
       }
       
       // V2: quote is a substring (fuzzy/normalized)
-      const cleanText = chunk.text.replace(/\s+/g, ' ').toLowerCase();
+      const fullChunkText = `${chunk.section_heading ? chunk.section_heading + ' ' : ''}${chunk.text}`;
+      const cleanText = fullChunkText.replace(/\s+/g, ' ').toLowerCase();
       const cleanQuote = claim.quote.replace(/\s+/g, ' ').toLowerCase();
       
       if (!cleanText.includes(cleanQuote)) {
@@ -42,7 +43,7 @@ export async function verifyAndCorrect(
            .trim()
            .toLowerCase();
 
-        if (!norm(chunk.text).includes(norm(claim.quote))) {
+        if (!norm(fullChunkText).includes(norm(claim.quote))) {
           errors.push(`Claim "${claim.claim_text}": quote "${claim.quote}" not found in chunk.`);
           droppedClaims.push(claim);
           continue;
@@ -52,7 +53,7 @@ export async function verifyAndCorrect(
       // V3-V4: numerical consistency
       const extractNumbers = (str: string): string[] => (str.match(/\d+(\.\d+)?/g) || []);
       const claimNums = extractNumbers(claim.claim_text);
-      const chunkNums = extractNumbers(chunk.text);
+      const chunkNums = extractNumbers(fullChunkText);
       const missing = claimNums.filter(n => !chunkNums.includes(n));
       
       if (missing.length > 0) {
@@ -63,25 +64,37 @@ export async function verifyAndCorrect(
       
       validClaims.push(claim);
     }
-    
-    return { validClaims, errors };
+
+    let validDisagreements: typeof resp.disagreements = null;
+    if (resp.disagreements && Array.isArray(resp.disagreements)) {
+      validDisagreements = resp.disagreements
+        .map(dis => {
+          const validPositions = dis.positions.filter(pos => {
+            const chunk = contextChunks.find(c => c.chunk_id === pos.chunk_id);
+            if (!chunk) {
+              errors.push(`Disagreement "${dis.topic}": chunk_id ${pos.chunk_id} not found in context.`);
+              return false;
+            }
+            return true;
+          });
+          return { ...dis, positions: validPositions };
+        })
+        .filter(dis => dis.positions.length >= 2);
+
+      if (validDisagreements.length === 0) validDisagreements = null;
+    }
+
+    return { validClaims, validDisagreements, errors };
   }
 
-  const { validClaims, errors } = validate(response);
+  const { validClaims, validDisagreements, errors } = validate(response);
+  response.disagreements = validDisagreements;
 
   if (validClaims.length === 0 && errors.length > 0) {
     console.log('All claims failed verification! Errors:', errors);
     // V8-V9: Trigger self-correction LLM pass since we have no valid claims left
-    const correctionPrompt = `
-      Question: ${question}
-      Context XML:
-      ${JSON.stringify(contextChunks.map(c => `<chunk id="${c.chunk_id}">${c.text}</chunk>`))}
-      
-      Your previous response failed validation with the following errors:
-      ${errors.join('\n')}
-      
-      Please provide a corrected response that strictly follows the constraints.
-    `;
+    const xmlContext = contextChunks.map(c => `<chunk id="${c.chunk_id}">\n${c.text}\n</chunk>`).join('\n\n');
+    const correctionPrompt = `Question: ${question}\n\nContext XML:\n${xmlContext}\n\nYour previous response failed validation with the following errors:\n${errors.join('\n')}\n\nPlease provide a corrected response that strictly follows the constraints.`;
     
     try {
       const corrected = await callModel([
@@ -96,7 +109,7 @@ export async function verifyAndCorrect(
          };
       }
       
-      return { response: { ...corrected, claims: correctedValidation.validClaims }, droppedClaims };
+      return { response: { ...corrected, claims: correctedValidation.validClaims, disagreements: correctedValidation.validDisagreements }, droppedClaims };
       
     } catch (e) {
       console.error('Self correction failed', e);
@@ -109,5 +122,5 @@ export async function verifyAndCorrect(
     console.log('Partial verification failure. Dropping bad claims:', errors);
   }
   
-  return { response: { ...response, claims: validClaims }, droppedClaims };
+  return { response: { ...response, claims: validClaims, disagreements: validDisagreements }, droppedClaims };
 }

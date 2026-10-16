@@ -1,12 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function InputBox({ onSend, disabled }: { onSend: (text: string) => void, disabled: boolean }) {
+const AUTHORITIES = [
+  { label: 'All Sources', docs: undefined },
+  { label: 'ICMR-NIN', docs: ['D1'] },
+  { label: 'Health Canada', docs: ['D2'] },
+  { label: 'UK FSA', docs: ['D3'] },
+  { label: 'FSSAI', docs: ['D4', 'D7'] },
+  { label: 'WHO', docs: ['D5', 'D6'] }
+];
+
+export default function InputBox({ 
+  onSend, 
+  disabled 
+}: { 
+  onSend: (text: string, documentFilter?: string[]) => void, 
+  disabled: boolean 
+}) {
   const [text, setText] = useState('');
+  const [selectedAuthority, setSelectedAuthority] = useState<string[] | undefined>(undefined);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = () => {
     if (text.trim() && !disabled) {
-      onSend(text.trim());
+      onSend(text.trim(), selectedAuthority);
       setText('');
     }
   };
@@ -26,7 +42,31 @@ export default function InputBox({ onSend, disabled }: { onSend: (text: string) 
   }, [text]);
 
   return (
-    <div className="max-w-3xl w-full mx-auto pt-2 pb-4 space-y-3 sticky bottom-3 z-30">
+    <div className="max-w-3xl w-full mx-auto pt-2 pb-4 space-y-2.5 sticky bottom-3 z-30">
+      {/* Authority Filter Selection Bar */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none text-nowrap px-1">
+        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider pl-1 shrink-0">Filter:</span>
+        {AUTHORITIES.map((auth, idx) => {
+          const isSelected = (!selectedAuthority && !auth.docs) || 
+            (selectedAuthority && auth.docs && selectedAuthority.join(',') === auth.docs.join(','));
+          return (
+            <button
+              key={idx}
+              type="button"
+              disabled={disabled}
+              onClick={() => setSelectedAuthority(auth.docs)}
+              className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition-all shrink-0 cursor-pointer ${
+                isSelected 
+                  ? 'bg-teal-700 text-white shadow-2xs' 
+                  : 'bg-white/90 text-slate-600 hover:bg-slate-100 border border-slate-200/80'
+              }`}
+            >
+              {auth.label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Floating Pill Input Container */}
       <div className="bg-white rounded-full shadow-lg p-2 pl-5 flex items-center gap-3 focus-within:shadow-xl transition-all duration-300 border border-slate-200/80">
         <span className="material-symbols-outlined text-[#0d9488] text-[22px]">temp_preferences_custom</span>
@@ -73,7 +113,7 @@ export default function InputBox({ onSend, disabled }: { onSend: (text: string) 
         ].map((query, i) => (
           <button 
             key={i}
-            onClick={() => onSend(query)}
+            onClick={() => onSend(query, selectedAuthority)}
             disabled={disabled}
             className="suggestion-chip px-3.5 py-1 rounded-full bg-surface-container-lowest hover:bg-surface-container-low text-on-surface font-label-sm text-label-sm shadow-sm transition-colors shrink-0" 
             type="button"
