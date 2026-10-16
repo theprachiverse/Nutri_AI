@@ -17,6 +17,8 @@ export async function answerQuestion(
   documentFilter?: string[],
   onProgress?: (msg: string) => void
 ): Promise<NutritionResponse> {
+  // Canonicalize so casing/spacing/trailing punctuation never changes retrieval
+  question = question.trim().replace(/\s+/g, ' ').replace(/[?!.\s]+$/g, '').toLowerCase();
   
   // Fetch chat history
   const history = await prisma.message.findMany({
@@ -57,7 +59,17 @@ export async function answerQuestion(
   
   // 4. Reranking
   if (onProgress) onProgress("Re-ranking and filtering sources...");
-  const reranked = await reranker.rerank(routed.expandedQueries[0], candidates);
+  // Score against the original question AND the expanded query; keep the best score per chunk
+  const rerankQueries = Array.from(new Set([question, routed.expandedQueries[0]]));
+  const rerankRuns = await Promise.all(rerankQueries.map(q => reranker.rerank(q, candidates)));
+  const bestScores = new Map<string, any>();
+  for (const run of rerankRuns) {
+    for (const c of run) {
+      const prev = bestScores.get(c.chunk_id);
+      if (!prev || prev.rerank_score < c.rerank_score) bestScores.set(c.chunk_id, c);
+    }
+  }
+  const reranked = Array.from(bestScores.values()).sort((a, b) => b.rerank_score - a.rerank_score);
   
   // 5. Coverage
   if (!checkCoverage(reranked)) {
